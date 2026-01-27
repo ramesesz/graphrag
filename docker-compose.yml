@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # 1. Database
+  neo4j:
+    image: neo4j:5.15.0
+    container_name: neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - ./services/neo4j/data:/data
+    environment:
+      - NEO4J_AUTH=neo4j/password123
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+
+  # 2. Local LLM (The Brain)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_storage:/root/.ollama
+
+  processor:
+      build: ./services/processor
+      container_name: graph-processor
+      environment:
+        - PYTHONUNBUFFERED=1
+        - NEO4J_URI=bolt://neo4j:7687
+        - NEO4J_PASSWORD=password123
+        - OLLAMA_BASE_URL=http://ollama:11434
+      volumes:
+        - ./data/input_docs:/app/input_docs
+        - ./data/output_json:/app/output_json
+      depends_on:
+        - neo4j
+        - ollama
+
+  jupyter:
+    build: ./services/processor # Mirrors the processor container
+    container_name: rag-notebook
+    ports:
+      - "8888:8888"
+    environment:
+      # Pass the same env vars so your code works exactly the same
+      - PYTHONUNBUFFERED=1
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_PASSWORD=password123
+      - OLLAMA_BASE_URL=http://ollama:11434
+    volumes:
+      # Map a folder for your .ipynb files
+      - ./notebooks:/app/notebooks
+      # Map the data so you can test loading PDFs
+      - ./data:/app/data
+    # Override the default "python main.py" command to start Jupyter instead
+    command: jupyter notebook --ip 0.0.0.0 --port 8888 --no-browser --allow-root --notebook-dir=/app --NotebookApp.token='' --NotebookApp.password=''
+    depends_on:
+      - neo4j
+      - ollama
+
+volumes:
+  ollama_storage:

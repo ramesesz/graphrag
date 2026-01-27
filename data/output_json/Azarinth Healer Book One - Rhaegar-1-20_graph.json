@@ -1,0 +1,1298 @@
+[
+  {
+    "source_text_chunk": "AZARINTH HEALER\nOceanofPDF.com...",
+    "nodes": [
+      {
+        "id": "Azarinth",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Healer",
+        "type": "Occupation",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Azarinth",
+        "target": "Healer",
+        "type": "OCCUPATION",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "Book One\nOceanofPDF.com...",
+    "nodes": [
+      {
+        "id": "Book One",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Oceanofpdf.Com",
+        "type": "Website",
+        "properties": {}
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "source_text_chunk": "RHAEGAR\nOceanofPDF.com...",
+    "nodes": [
+      {
+        "id": "Rhaegar",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Oceanofpdf.Com",
+        "type": "Website",
+        "properties": {}
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "source_text_chunk": "Thanks for checking out Azarinth Healer, Book One.\nWe hope you enjoy this latest instalment of Porta...",
+    "nodes": [
+      {
+        "id": "Azarinth Healer",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Portal Books",
+        "type": "Publisher",
+        "properties": {}
+      },
+      {
+        "id": "Litrpg/Progression Fantasy",
+        "type": "Genre",
+        "properties": {}
+      },
+      {
+        "id": "Portal Books Story Bundle",
+        "type": "Story bundle",
+        "properties": {}
+      },
+      {
+        "id": "Oceanofpdf.Com",
+        "type": "Website",
+        "properties": {}
+      },
+      {
+        "id": "Facebook",
+        "type": "Social media platform",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Azarinth Healer",
+        "target": "Portal Books",
+        "type": "PUBLISHED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books Story Bundle",
+        "target": "Portal Books",
+        "type": "OFFERED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books Story Bundle",
+        "target": "Oceanofpdf.Com",
+        "type": "AVAILABLE_ON",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books",
+        "target": "Facebook",
+        "type": "PRESENT_ON",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "Hey all. This is Rhaegar. The book is out. I decided to have the dedication\nand thank you note at th...",
+    "nodes": [
+      {
+        "id": "Rhaegar",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Book",
+        "type": "Book",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Rhaegar",
+        "target": "Book",
+        "type": "AUTHOR",
+        "properties": {}
+      },
+      {
+        "source": "Book",
+        "target": "Oceanofpdf.Com",
+        "type": "PUBLISHED_ON",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "Contents\n1. Where is the Magic?\n2. Big Bad Wolves\n3. Glowing Moss\n4. Exploration\n5. Civilization\n6. ...",
+    "nodes": [
+      {
+        "id": "Magic",
+        "type": "Concept",
+        "properties": {}
+      },
+      {
+        "id": "Big Bad Wolves",
+        "type": "Entity",
+        "properties": {}
+      },
+      {
+        "id": "Glowing Moss",
+        "type": "Entity",
+        "properties": {}
+      },
+      {
+        "id": "Exploration",
+        "type": "Activity",
+        "properties": {}
+      },
+      {
+        "id": "Civilization",
+        "type": "Entity",
+        "properties": {}
+      },
+      {
+        "id": "Library",
+        "type": "Location",
+        "properties": {}
+      },
+      {
+        "id": "Broken Bones",
+        "type": "Condition",
+        "properties": {}
+      },
+      {
+        "id": "Death",
+        "type": "Event",
+        "properties": {}
+      },
+      {
+        "id": "Graves To Dig",
+        "type": "Activity",
+        "properties": {}
+      },
+      {
+        "id": "Catch A Ride",
+        "type": "Activity",
+        "properties": {}
+      },
+      {
+        "id": "City Life",
+        "type": "Entity",
+        "properties": {}
+      },
+      {
+        "id": "The Arena",
+        "type": "Location",
+        "properties": {}
+      },
+      {
+        "id": "A Relaxing Afternoon",
+        "type": "Event",
+        "properties": {}
+      },
+      {
+        "id": "Party Life",
+        "type": "Entity",
+        "properties": {}
+      },
+      {
+        "id": "More Bad Dogs",
+        "type": "Entity",
+        "properties": {}
+      },
+      {
+        "id": "Loss",
+        "type": "Condition",
+        "properties": {}
+      },
+      {
+        "id": "Bracers And Books",
+        "type": "Entity",
+        "properties": {}
+      },
+      {
+        "id": "Through The Fire And Flames",
+        "type": "Event",
+        "properties": {}
+      },
+      {
+        "id": "The Bigger They Are",
+        "type": "Event",
+        "properties": {}
+      },
+      {
+        "id": "Superhero Landing",
+        "type": "Event",
+        "properties": {}
+      },
+      {
+        "id": "The Unlife",
+        "type": "Concept",
+        "properties": {}
+      },
+      {
+        "id": "Consequences",
+        "type": "Condition",
+        "properties": {}
+      },
+      {
+        "id": "Sun",
+        "type": "Entity",
+        "properties": {}
+      },
+      {
+        "id": "The Queen",
+        "type": "Entity",
+        "properties": {}
+      },
+      {
+        "id": "Woman And Monster",
+        "type": "Entity",
+        "properties": {}
+      },
+      {
+        "id": "Not A Title",
+        "type": "Event",
+        "properties": {}
+      },
+      {
+        "id": "Road Trip",
+        "type": "Activity",
+        "properties": {}
+      },
+      {
+        "id": "Actual Healing",
+        "type": "Condition",
+        "properties": {}
+      },
+      {
+        "id": "Force Of Nature",
+        "type": "Entity",
+        "properties": {}
+      },
+      {
+        "id": "Claymore",
+        "type": "Entity",
+        "properties": {}
+      },
+      {
+        "id": "Arrival",
+        "type": "Event",
+        "properties": {}
+      },
+      {
+        "id": "Slice Of Life",
+        "type": "Event",
+        "properties": {}
+      },
+      {
+        "id": "#Traveling",
+        "type": "Activity",
+        "properties": {}
+      },
+      {
+        "id": "Dungeon Diving",
+        "type": "Activity",
+        "properties": {}
+      },
+      {
+        "id": "Outclassed",
+        "type": "Condition",
+        "properties": {}
+      },
+      {
+        "id": "Sparring And Advice",
+        "type": "Event",
+        "properties": {}
+      },
+      {
+        "id": "Azarinth Leecher",
+        "type": "Entity",
+        "properties": {}
+      },
+      {
+        "id": "Centurion",
+        "type": "Entity",
+        "properties": {}
+      },
+      {
+        "id": "Traps",
+        "type": "Location",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Magic",
+        "target": "Big Bad Wolves",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Exploration",
+        "target": "Civilization",
+        "type": "ASSOCIATED_WITH",
+        "properties": {}
+      },
+      {
+        "source": "Library",
+        "target": "The Arena",
+        "type": "NEARBY_TO",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "40. Fire and Ash\n41. Trash Compactor\n42. Sushi\n43. Reasons\n44. Newcomers\n45. Cake\n46. Alice\n47. Dark...",
+    "nodes": [
+      {
+        "id": "Fire And Ash",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Trash Compactor",
+        "type": "Concept",
+        "properties": {}
+      },
+      {
+        "id": "Sushi",
+        "type": "Food",
+        "properties": {}
+      },
+      {
+        "id": "Reasons",
+        "type": "Topic",
+        "properties": {}
+      },
+      {
+        "id": "Newcomers",
+        "type": "Group",
+        "properties": {}
+      },
+      {
+        "id": "Cake",
+        "type": "Food",
+        "properties": {}
+      },
+      {
+        "id": "Alice",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Darkness",
+        "type": "Concept",
+        "properties": {}
+      },
+      {
+        "id": "Treasures And Fire",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "On The Trail Of History",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Ashen Healer",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "That\u2019S No Bird",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "New Companions And Enemies",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Return",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Cards And Poison",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Dungeon Crawl",
+        "type": "Concept",
+        "properties": {}
+      },
+      {
+        "id": "Clean-Up Crew",
+        "type": "Group",
+        "properties": {}
+      },
+      {
+        "id": "Screaming Steel",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Resisting",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Praetorian",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Scythes And Swords",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Sharing Is Caring",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Survivors",
+        "type": "Group",
+        "properties": {}
+      },
+      {
+        "id": "Politics And Power",
+        "type": "Topic",
+        "properties": {}
+      },
+      {
+        "id": "Snow And Ice",
+        "type": "Concept",
+        "properties": {}
+      },
+      {
+        "id": "Shadows",
+        "type": "Concept",
+        "properties": {}
+      },
+      {
+        "id": "Hunting",
+        "type": "Activity",
+        "properties": {}
+      },
+      {
+        "id": "Evolution",
+        "type": "Concept",
+        "properties": {}
+      },
+      {
+        "id": "Books And Nobles",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "A Dark Night",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Old Beings",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Decisions And Ale",
+        "type": "Book",
+        "properties": {}
+      },
+      {
+        "id": "Ravenhall",
+        "type": "Location",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Fire And Ash",
+        "type": "PUBLISHED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Trash Compactor",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Sushi",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Reasons",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Newcomers",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Cake",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Alice",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Darkness",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Treasures And Fire",
+        "type": "PUBLISHED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "On The Trail Of History",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Ashen Healer",
+        "type": "PUBLISHED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "That\u2019S No Bird",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "New Companions And Enemies",
+        "type": "PUBLISHED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Return",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Cards And Poison",
+        "type": "PUBLISHED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Dungeon Crawl",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Clean-Up Crew",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Screaming Steel",
+        "type": "PUBLISHED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Resisting",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Praetorian",
+        "type": "PUBLISHED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Scythes And Swords",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Sharing Is Caring",
+        "type": "PUBLISHED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Survivors",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Politics And Power",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Snow And Ice",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Shadows",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Hunting",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Evolution",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Books And Nobles",
+        "type": "PUBLISHED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "A Dark Night",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Old Beings",
+        "type": "PUBLISHED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Decisions And Ale",
+        "type": "RELATED_TO",
+        "properties": {}
+      },
+      {
+        "source": "Portal Books - Newsletter And Group",
+        "target": "Ravenhall",
+        "type": "RELATED_TO",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "ONE\nOceanofPDF.com...",
+    "nodes": [
+      {
+        "id": "One",
+        "type": "Website",
+        "properties": {}
+      },
+      {
+        "id": "Oceanofpdf.Com",
+        "type": "Website",
+        "properties": {}
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "source_text_chunk": "Where is the Magic?\nIlea focused on the dull sound of her fists hitting the bag. Her world\nnarrowed....",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Mark",
+        "type": "Person",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Mark",
+        "type": "INTERACTED_WITH",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "\u201cMark, are you kidding me? I\u2019ve been training every day for the past\ntwo weeks and you won\u2019t let me ...",
+    "nodes": [
+      {
+        "id": "Mark",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Jon",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Mark",
+        "target": "Ilea",
+        "type": "PROFESSOR",
+        "properties": {}
+      },
+      {
+        "source": "Jon",
+        "target": "Ilea",
+        "type": "COMPETITOR",
+        "properties": {}
+      },
+      {
+        "source": "Mark",
+        "target": "Ilea",
+        "type": "MENTOR",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "Ilea smiled and crossed the street herself, checking briefly for any other\ncars.\nThe walk back to he...",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Street",
+        "type": "Location",
+        "properties": {}
+      },
+      {
+        "id": "Apartment",
+        "type": "Location",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Street",
+        "type": "CROSSED",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "Apartment",
+        "type": "WALKED_TO",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "the table, piled around two screens and a half-covered keyboard. The\nground was covered in clothes, ...",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Shitty Fast-Food Place 87",
+        "type": "Business",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Shitty Fast-Food Place 87",
+        "type": "WORKS_AT",
+        "properties": {}
+      },
+      {
+        "source": "Shitty Fast-Food Place 87",
+        "target": "Ilea",
+        "type": "EMPLOYER",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "Small jokes helped pass the time a little. At first, the repetitive job had\noffered a kind of medita...",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Jeff",
+        "type": "Person",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Jeff",
+        "type": "WORK_COLLEAGUE",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "Medicine",
+        "type": "STUDENT_OF",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "major for a while and knew she definitely wanted to go into the health\nsector. Nursing school was an...",
+    "nodes": [
+      {
+        "id": "Health Sector",
+        "type": "Concept",
+        "properties": {}
+      },
+      {
+        "id": "Nursing School",
+        "type": "Institution",
+        "properties": {}
+      },
+      {
+        "id": "Doctors",
+        "type": "Professionals",
+        "properties": {}
+      },
+      {
+        "id": "Nutrition",
+        "type": "Field of study",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Health Sector",
+        "target": "Nursing School",
+        "type": "ALTERNATIVE",
+        "properties": {}
+      },
+      {
+        "source": "Doctors",
+        "target": "Health Sector",
+        "type": "PART_OF",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "might be interesting. Working in a gym would be acceptable. Or maybe\ntherapy or something.\nFirst, th...",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Philosophy Majors",
+        "type": "Group",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Philosophy Majors",
+        "type": "MAJOR",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "\u201cAvoided death there\u2026\u201d she murmured, leaving the bathroom with a\ntoothbrush in her mouth.\nFighting t...",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Rory",
+        "type": "Person",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Rory",
+        "type": "FRIEND",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "job, and the various majors she had been considering provided some\ninteresting options. But really, ...",
+    "nodes": [
+      {
+        "id": "Job",
+        "type": "Thing",
+        "properties": {}
+      },
+      {
+        "id": "She",
+        "type": "Person",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "She",
+        "target": "Job",
+        "type": "CONSIDERING",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "Sure, she had some choices, some freedom, but not to the extent that she\nwished. There were other op...",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Jeff",
+        "type": "Person",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Jeff",
+        "type": "KNOWS",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "Ilea awoke to the chirping of birds and the sun shining on her face. Her eyes\nopened slowly.\nOnly to...",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Sun",
+        "type": "Celestial_body",
+        "properties": {}
+      },
+      {
+        "id": "Birds",
+        "type": "Animal",
+        "properties": {}
+      },
+      {
+        "id": "Grass",
+        "type": "Plant",
+        "properties": {}
+      },
+      {
+        "id": "House",
+        "type": "Building",
+        "properties": {}
+      },
+      {
+        "id": "Walls",
+        "type": "Structure",
+        "properties": {}
+      },
+      {
+        "id": "Trees",
+        "type": "Plant",
+        "properties": {}
+      },
+      {
+        "id": "Stream",
+        "type": "Body_of_water",
+        "properties": {}
+      },
+      {
+        "id": "City",
+        "type": "Location",
+        "properties": {}
+      },
+      {
+        "id": "Forest",
+        "type": "Location",
+        "properties": {}
+      },
+      {
+        "id": "Prankster Youtubers",
+        "type": "Group",
+        "properties": {}
+      },
+      {
+        "id": "Flower",
+        "type": "Plant",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Sun",
+        "type": "OBSERVED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "Birds",
+        "type": "HEARD",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "Grass",
+        "type": "OBSERVED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "House",
+        "type": "FELL_ASLEEP_IN",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "Walls",
+        "type": "PART_OF",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "Trees",
+        "type": "SURROUNDED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "Stream",
+        "type": "HEARD",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "City",
+        "type": "NOT_IN",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "Forest",
+        "type": "NOT_NEAR",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "Prankster Youtubers",
+        "type": "SUSPECTED_BY",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "Flower",
+        "type": "OBSERVED_BY",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "She began to walk toward the sound of a nearby stream.\nWhere there is water, there is life, people, ...",
+    "nodes": [
+      {
+        "id": "She",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Stream",
+        "type": "Location",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "She",
+        "target": "Stream",
+        "type": "WALKING_TOWARD",
+        "properties": {}
+      },
+      {
+        "source": "Stream",
+        "target": "Life",
+        "type": "ASSOCIATED_WITH",
+        "properties": {}
+      },
+      {
+        "source": "Stream",
+        "target": "People",
+        "type": "ASSOCIATED_WITH",
+        "properties": {}
+      },
+      {
+        "source": "Stream",
+        "target": "Towns",
+        "type": "ASSOCIATED_WITH",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "that anyone else had been there. No sign of civilization. No remotely\nunnatural or man-made sound co...",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Stream",
+        "type": "Location",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Stream",
+        "type": "NEAREST_TO",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "well as all other sounds around her. A final immense thud reached her ears\nas the steps came to an e...",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Dragon",
+        "type": "Animal",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Dragon",
+        "type": "LOOK_AT",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "Three meters in length, it had the head of a dragon and no wings, and its\nmaw was bloody.\nThen it lo...",
+    "nodes": [
+      {
+        "id": "Drake",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Drake",
+        "target": "Ilea",
+        "type": "LOOKED_AT",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "TWO\nOceanofPDF.com...",
+    "nodes": [
+      {
+        "id": "Two",
+        "type": "Number",
+        "properties": {}
+      },
+      {
+        "id": "Oceanofpdf.Com",
+        "type": "Website",
+        "properties": {}
+      }
+    ],
+    "relationships": []
+  }
+]

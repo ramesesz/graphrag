@@ -1,0 +1,11 @@
+pypdf
+langchain
+langchain-community
+langchain-ollama
+langchain-experimental
+langchain-neo4j
+neo4j
+
+# --- Interactive Testing ---
+notebook
+ipykernel
