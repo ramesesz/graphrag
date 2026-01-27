@@ -33,8 +33,7 @@ services:
         - NEO4J_PASSWORD=password123
         - OLLAMA_BASE_URL=http://ollama:11434
       volumes:
-        - ./data/input_docs:/app/input_docs
-        - ./data/output_json:/app/output_json
+        - ./data:/app/data
       depends_on:
         - neo4j
         - ollama

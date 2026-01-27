@@ -3,6 +3,7 @@ import json
 import glob
 import time
 import argparse
+from pathlib import Path
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_ollama import ChatOllama
@@ -10,14 +11,22 @@ from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_neo4j import Neo4jGraph
 
 # --- Configuration ---
-INPUT_DIR = "/app/input_docs"
-OUTPUT_DIR = "/app/output_json"
-CHUNKS_DIR = "/app/output_chunks"
+# Use /app as base directory if it exists (Docker), otherwise use current directory
+APP_DIR = Path("/app") if Path("/app").exists() else Path.cwd()
+DATA_DIR = APP_DIR / "data"
+INPUT_DIR = DATA_DIR / "input_docs"
+OUTPUT_DIR = DATA_DIR / "output_json"
+CHUNKS_DIR = DATA_DIR / "output_chunks"
 OLLAMA_URL = os.environ.get("OLLAMA_BASE_URL", "http://ollama:11434")
 
+print(f"[i] App directory: {APP_DIR}")
+print(f"[i] Data directory: {DATA_DIR}")
+print(f"[i] Input directory: {INPUT_DIR}")
+print(f"[i] Output directory: {OUTPUT_DIR}")
+
 # Ensure output directories exist
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-os.makedirs(CHUNKS_DIR, exist_ok=True)
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+CHUNKS_DIR.mkdir(parents=True, exist_ok=True)
 
 # Connect to Neo4j
 # (Retry loop because Neo4j takes time to initialize the bolt protocol)
@@ -66,20 +75,36 @@ def save_graph_to_json(graph_documents, filename):
         } for r in doc.relationships]
         
         data_export.append({
-            "source_text_chunk": doc.source.page_content[:100] + "...",
+            "source_text_chunk": doc.source.page_content,
             "nodes": nodes,
             "relationships": rels
         })
         
-    path = os.path.join(OUTPUT_DIR, filename)
+    path = OUTPUT_DIR / filename
     with open(path, 'w', encoding='utf-8') as f:
         json.dump(data_export, f, indent=2)
     print(f"   [✓] Saved JSON to: {filename}")
 
+def save_chunks_to_json(chunks, filename):
+    """Save text chunks as intermediate JSON."""
+    data_export = [
+        {
+            "chunk_id": i,
+            "content": chunk.page_content,
+            "metadata": chunk.metadata
+        }
+        for i, chunk in enumerate(chunks)
+    ]
+    
+    path = CHUNKS_DIR / filename
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(data_export, f, indent=2)
+    print(f"   [✓] Saved chunks to: {filename}")
+
 def load_chunks_from_json(filename):
     """Load text chunks from a saved JSON file."""
-    path = os.path.join(CHUNKS_DIR, filename)
-    if not os.path.exists(path):
+    path = CHUNKS_DIR / filename
+    if not path.exists():
         raise FileNotFoundError(f"Chunks file not found: {path}")
     
     with open(path, 'r', encoding='utf-8') as f:
@@ -154,10 +179,10 @@ def main():
         description="GraphRAG extraction pipeline",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-Modes:
-  full    - Complete pipeline: PDF → chunks JSON → graph extraction → JSON → Neo4j (default)
-  chunks  - Extract text chunks only: PDF → chunks JSON (fast, for testing/reviewing)
-  graph   - Extract graph from chunks: chunks JSON → graph extraction → JSON → Neo4j (requires chunks file)
+            Modes:
+            full    - Complete pipeline: PDF → chunks JSON → graph extraction → JSON → Neo4j (default)
+            chunks  - Extract text chunks only: PDF → chunks JSON (fast, for testing/reviewing)
+            graph   - Extract graph from chunks: chunks JSON → graph extraction → JSON → Neo4j (requires chunks file)
         """
     )
     parser.add_argument(
@@ -173,7 +198,7 @@ Modes:
         print("[✗] ERROR: Could not connect to Neo4j. Cannot run in 'full' or 'graph' mode.")
         return
     
-    pdf_files = glob.glob(os.path.join(INPUT_DIR, "*.pdf"))
+    pdf_files = glob.glob(str(INPUT_DIR / "*.pdf"))
     if not pdf_files:
         print("No PDFs found in input folder.")
         return
