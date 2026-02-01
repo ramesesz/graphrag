@@ -3,7 +3,9 @@ import json
 import glob
 import time
 import argparse
+import re
 from pathlib import Path
+from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_ollama import ChatOllama
@@ -102,9 +104,9 @@ node_properties = [
 # Note: LLMGraphTransformer works best with models that follow instructions well (like Llama 3.1)
 llm_transformer = LLMGraphTransformer(
     llm=llm, 
-    allowed_nodes=allowed_nodes, 
-    allowed_relationships=allowed_relationships,
-    node_properties=node_properties
+    # allowed_nodes=allowed_nodes, 
+    # allowed_relationships=allowed_relationships,
+    # node_properties=node_properties
 )
 
 
@@ -154,9 +156,7 @@ def load_chunks_from_json(filename):
     
     with open(path, 'r', encoding='utf-8') as f:
         data = json.load(f)
-    
-    # Reconstruct LangChain Document objects
-    from langchain_core.documents import Document
+
     chunks = [
         Document(
             page_content=item["content"],
@@ -189,18 +189,59 @@ def process_document(file_path, mode="full"):
             print(f"   [!] Please run in 'chunks' or 'full' mode first to generate {chunks_filename}")
             return
     else:
-        # Full/chunks mode: load PDF and extract chunks
         print(f"\nProcessing: {os.path.basename(file_path)}...")
         
         loader = PyPDFLoader(file_path)
-        raw_docs = loader.load()
+        raw_pages = loader.load()
+                
+        # Inject page markers
+        merged_content = ""
+        base_metadata = raw_pages[0].metadata if raw_pages else {}
         
+        # Inject markers into the text stream
+        for i, page in enumerate(raw_pages):
+            # Using a distinct format: "--- Page 5 ---"
+            # The 'page_label' is often cleaner than 'page' index if available
+            label = page.metadata.get("page_label", str(i + 1))
+            content_cleaned = page.page_content.replace("OceanofPDF.com", "")
+            
+            # Optional: Remove double newlines created by the removal if needed
+            content_cleaned = re.sub(r'\n\s*\n', '\n\n', content_cleaned)
+            
+            merged_content += f"\n\n--- Page {label} ---\n" + content_cleaned
+
+        # Combine documents into a single one
+        single_doc = Document(page_content=merged_content, metadata=base_metadata)
+        
+        # Split documents with overlap
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=2000, 
-            chunk_overlap=200
+            chunk_overlap=200,
+            # We add our custom page marker to separators to help the splitter break cleanly there
+            separators=["--- Page", "\n\n", "\n", ".", " "] 
         )
-        chunks = text_splitter.split_documents(raw_docs)
-        print(f"   [i] Split into {len(chunks)} chunks.")
+        chunks = text_splitter.split_documents([single_doc])
+        
+        # Re-extract injected metadata for each chunk
+        current_page_label = raw_pages[0].metadata.get("page_label", "1")
+        
+        for chunk in chunks:
+            # Look for the page marker in this specific chunk
+            # Regex explanation: Looks for "--- Page " followed by digits
+            match = re.search(r"--- Page (\d+) ---", chunk.page_content)
+            
+            if match:
+                # If we find a new marker, update our tracker
+                current_page_label = match.group(1)
+            
+            # Update the chunk's metadata with the tracked page number
+            chunk.metadata["page_label"] = current_page_label
+            chunk.metadata["page_number"] = int(current_page_label) # Useful for sorting
+            
+            # Optional: Add source filename back if it got lost
+            chunk.metadata["source"] = str(file_path)
+
+        print(f"   [i] Split into {len(chunks)} chunks. Metadata restored.")
         
         # Save chunks to JSON
         save_chunks_to_json(chunks, chunks_filename)
@@ -209,8 +250,9 @@ def process_document(file_path, mode="full"):
         if mode == "chunks":
             return
     
-    print("   [i] Extracting graph (this may take time on CPU/iGPU)...")
-    graph_documents = llm_transformer.convert_to_graph_documents(chunks)
+    num_chunks = 1
+    print(f"   [i] Extracting graph from {num_chunks} chunks (this may take time on CPU/iGPU)...")
+    graph_documents = llm_transformer.convert_to_graph_documents(chunks[:num_chunks])
     
     json_filename = f"{base_filename}_graph.json"
     save_graph_to_json(graph_documents, json_filename)
