@@ -59,9 +59,54 @@ llm = ChatOllama(
     base_url=OLLAMA_URL
 )
 
+allowed_nodes = [
+    "Person",    # Sentient individuals like Ilea [cite: 2]
+    "Race",      # Biological category like Human [cite: 73]
+    "Class",     # System paths or academic majors [cite: 82, 149]
+    "Skill",     # System abilities like Identify [cite: 212]
+    "Creature",  # Individual monsters like the Drake [cite: 211]
+    "Species",   # Monster categories like Drake [cite: 209]
+    "Location",  # Geographical areas like the Forest [cite: 160]
+    "Item"       # Objects of interest like the Blue Flower [cite: 169]
+]
+
+allowed_relationships = [
+    # Identity and Biology
+    ("Person", "BELONGS_TO_RACE", "Race"),        # Ilea is Human [cite: 73, 116]
+    ("Creature", "IS_SPECIES", "Species"),        # The monster is a Drake [cite: 211]
+    
+    # System Progression
+    ("Person", "HAS_CLASS", "Class"),             # Ilea studies Medicine or is a Fighter [cite: 82, 149]
+    ("Person", "LEARNED_SKILL", "Skill"),         # Ilea learned Identify lvl 1 [cite: 212]
+    ("Class", "GRANTS_SKILL", "Skill"),           # A class provides specific abilities
+    
+    # World Interaction
+    ("Person", "ENCOUNTERED", "Creature"),        # Ilea meets the Drake [cite: 207, 210]
+    ("Creature", "KILLED", "Creature"),           # The Drake kills its prey [cite: 208]
+    ("Person", "LOCATED_IN", "Location"),         # Ilea is in the Forest [cite: 159, 160]
+    ("Creature", "LOCATED_IN", "Location"),       # Drakes live in the Forest [cite: 203]
+    ("Item", "FOUND_IN", "Location"),             # Blue flowers are in the Forest [cite: 169]
+    ("Person", "HARVESTED", "Item")               # Picking up special flora
+]
+
+node_properties = [
+    "level",             # e.g., "lvl 1" or "lvl ??" [cite: 211, 212]
+    "description",       # e.g., "three meters, no wings" [cite: 209]
+    "rarity",            # For items or classes
+    "threat_rank",       # For creatures like the Drake [cite: 211]
+    "mana_nature",       # For locations or items [cite: 177]
+    "physical_appearance" # e.g., "glowing top" [cite: 177]
+]
+
 # The "Extractor" 
 # Note: LLMGraphTransformer works best with models that follow instructions well (like Llama 3.1)
-llm_transformer = LLMGraphTransformer(llm=llm)
+llm_transformer = LLMGraphTransformer(
+    llm=llm, 
+    allowed_nodes=allowed_nodes, 
+    allowed_relationships=allowed_relationships,
+    node_properties=node_properties
+)
+
 
 def save_graph_to_json(graph_documents, filename):
     data_export = []

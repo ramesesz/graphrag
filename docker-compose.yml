@@ -23,6 +23,13 @@ services:
       - "11434:11434"
     volumes:
       - ollama_storage:/root/.ollama
+    # Override the entrypoint so we can use a shell script
+    entrypoint: /bin/sh
+    command: >
+      -c "ollama serve & 
+          sleep 5; 
+          ollama pull llama3.1; 
+          wait"
 
   processor:
       build: ./services/processor
