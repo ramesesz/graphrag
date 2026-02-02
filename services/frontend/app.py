@@ -2,11 +2,11 @@ import streamlit as st
 import os
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_community.graphs import Neo4jGraph
+from langchain_neo4j import Neo4jGraph
 from streamlit_agraph import agraph, Node, Edge, Config
 
 # --- Configuration ---
-st.set_page_config(layout="wide", page_title="Azarinth Graph Chat")
+st.set_page_config(layout="wide", page_title="Novel Graph Chat")
 
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password")
@@ -36,10 +36,26 @@ if "llm" not in st.session_state:
 def extract_entities(question):
     """Step 2: Use LLM to extract potential entity names from the question."""
     prompt = ChatPromptTemplate.from_template(
-        """Extract the key entities (people, places, creatures, skills) from the following question. 
-        Return ONLY a comma-separated list of names. Do not add any other text.
-        
-        Question: {question}"""
+        """You are a Named Entity Recognition (NER) expert for a fantasy novel dataset.
+        Your task is to extract ALL meaningful entities (Persons, Locations, Monsters, Organizations, Skills) from the user's question.
+
+        Rules:
+        1. Return a comma-separated list of names.
+        2. Do not add labels like "Entities:" or "Output:".
+        3. Extract BOTH the subject (who) and the location/object (where/what).
+
+        Examples:
+        Question: "Where is Mark?"
+        Answer: Mark
+
+        Question: "Did Ilea fight the Drake in the Forest?"
+        Answer: Ilea, Drake, Forest
+
+        Question: "How do I get to Riverwatch?"
+        Answer: Riverwatch
+
+        Question: {question}
+        Answer:"""
     )
     chain = prompt | st.session_state.llm
     response = chain.invoke({"question": question})
@@ -78,11 +94,13 @@ def get_graph_context(entities):
             
             # Format text context for LLM
             # "Ilea (Person) -[ENCOUNTERED]-> Drake (Creature)"
-            context_line = f"{source['id']} ({source.get('type','Node')}) -[{rel['type']}]-> {target['id']} ({target.get('type','Node')})"
+            rel_type = rel[1] 
+
+            # Format text context for LLM
+            context_line = f"{source['id']} ({source.get('type','Node')}) -[{rel_type}]-> {target['id']} ({target.get('type','Node')})"
             graph_data["context_text"].append(context_line)
             
             # Prepare Visual Nodes (Streamlit AGraph)
-            # We use the ID as the unique key
             graph_data["nodes"].add((source['id'], source.get('type', 'Unknown')))
             graph_data["nodes"].add((target['id'], target.get('type', 'Unknown')))
             
@@ -90,7 +108,7 @@ def get_graph_context(entities):
             graph_data["edges"].append({
                 "source": source['id'],
                 "target": target['id'],
-                "label": rel['type']
+                "label": rel_type
             })
             
     except Exception as e:
