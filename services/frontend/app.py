@@ -134,16 +134,16 @@ for i, message in enumerate(st.session_state.messages):
                 render_graph_viz(message["graph_data"])
 
 # New Input
-if prompt := st.chat_input("Ask about Ilea..."):
+if prompt := st.chat_input("Ask something..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        # Fixed Status logic
-        status_placeholder = st.status("🛠️ System Analysis", expanded=True)
-        with status_placeholder:
-            st.write("Extracting Entities...")
+        # 1. Graph Analysis Status
+        status_box = st.status("🛠️ Analyzing Graph Data...", expanded=True)
+        with status_box:
+            st.write("Extracting entities...")
             entities = extract_entities(prompt)
             st.write(f"Detected: `{entities}`")
             
@@ -151,25 +151,28 @@ if prompt := st.chat_input("Ask about Ilea..."):
             graph_data = get_graph_context(entities)
             
             if not graph_data["nodes"]:
-                st.warning("No matching entities found in Neo4j.")
+                st.warning("No matching nodes found.")
             else:
                 st.success(f"Found {len(graph_data['nodes'])} related nodes.")
             
-            # Explicitly mark as complete
-            status_placeholder.update(label="Analysis Complete", state="complete", expanded=False)
+            status_box.update(label="Analysis Complete", state="complete", expanded=False)
 
-        # Answer
-        response_text = generate_answer(prompt, graph_data["context_text"])
+        # 2. Loading Animation for LLM Answer
+        # This keeps the user informed while the LLM is thinking
+        with st.spinner("Writing response based on graph context..."):
+            response_text = generate_answer(prompt, graph_data["context_text"])
+        
+        # 3. Display Final Answer
         st.markdown(response_text)
         
-        # Immediate Graph
+        # 4. Display Graph
         if graph_data["nodes"]:
             with st.expander("Graph Subnetwork", expanded=True):
                 render_graph_viz(graph_data)
 
-        # Save
+        # Save to history
         st.session_state.messages.append({
             "role": "assistant", 
-            "content": response_text,
+            "content": response_text, 
             "graph_data": graph_data
         })
