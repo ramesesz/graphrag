@@ -1,10 +1,195 @@
 [
   {
-    "source_text_chunk": "--- Page 1 ---\nThe story so far\u2026\nWhen Ilea returned from the north, she found that Ravenhall was back on\nthe upswing. With the war in Lys at a stalemate, refugees, merchants, and\ncraftspeople looking for safety and distance from the ongoing conflict were\nfinding a new home in the fortress city of the Shadow\u2019s Hand.\nWith all the equipment and gold from the vaults of Rhyvor added to the\ncoffers of the city, Ilea and Claire laid the foundations for what was to\ncome. An independent Ravenhall with its own guard and council, perhaps\neven its own healing organization.\nHer friends and allies were hard at work, so Ilea went to check in on\nRiverwatch, the first settlement she\u2019d found when she arrived on Elos. Her\njourney led her to a rematch with a demon she had fought some time ago\nand an investigation into the underbelly of Riverwatch. She met and trained\nwith a group of elves that were part of the Cerithil Hunters, elves who had\nforsaken their domains to go into dungeons and fight the machines left\nbehind by the Taleen dwarves, machines that Ilea is very familiar with.\nBefore she could go back to Ravenhall, Ilea was called to help in the\nnorth, where a corruption had started spreading amongst the monsters of the\nDescent. Frenzied creatures were coming up to the first layer of the ancient\ndungeon and endangering the settlers and scavengers that lived there.\nShe was joined by a group of powerful friends and allies, and they dove\ninto the unknown to find the source of the corruption and the fate of the\nexpedition that had gone into the dungeon before. Countless monster battles\nand days of resistance training finally brought Ilea to the 20th layer, where\nboth she and her allies battled and defeated the corrupted Sand Elemental",
+    "source_text_chunk": "--- Page 1 ---\nThe story so far\u2026\nWhen Ilea returned from the north, she found that Ravenhall was back on\nthe upswing. With the war in Lys at a stalemate, refugees, merchants, and\ncraftspeople looking for safety and distance from the ongoing conflict were\nfinding a new home in the fortress city of the Shadow\u2019s Hand.\nWith all the equipment and gold from the vaults of Rhyvor added to the\ncoffers of the city, Ilea and Claire laid the foundations for what was to\ncome. An independent Ravenhall with its own guard and council, perhaps\neven its own healing organization.\nHer friends and allies were hard at work, so Ilea went to check in on\nRiverwatch, the first settlement she\u2019d found when she arrived on Elos. Her\njourney led her to a rematch with a demon she had fought some time ago\nand an investigation into the underbelly of Riverwatch. She met and trained\nwith a group of elves that were part of the Cerithil Hunters, elves who had\nforsaken their domains to go into dungeons and fight the machines left\nbehind by the Taleen dwarves, machines that Ilea is very familiar with.\nBefore she could go back to Ravenhall, Ilea was called to help in the\nnorth, where a corruption had started spreading amongst the monsters of the\nDescent. Frenzied creatures were coming up to the first layer of the ancient\ndungeon and endangering the settlers and scavengers that lived there.\nShe was joined by a group of powerful friends and allies, and they dove\ninto the unknown to find the source of the corruption and the fate of the\nexpedition that had gone into the dungeon before. Countless monster battles\nand days of resistance training finally brought Ilea to the 20th layer, where\nboth she and her allies battled and defeated the corrupted Sand Elemental\n\n[Source: Azarinth_Healer_Book_5-9-794.pdf | Page: 1]",
     "nodes": [
       {
         "id": "Ilea",
         "type": "Person",
+        "properties": {
+          "description": "Returned from the north, involved in Ravenhall's development, fought a demon, trained with Cerithil Hunters, investigated corruption in the Descent."
+        }
+      },
+      {
+        "id": "Ravenhall",
+        "type": "Location",
+        "properties": {
+          "description": "Fortress city, experiencing growth due to refugees and merchants."
+        }
+      },
+      {
+        "id": "Lys",
+        "type": "Location",
+        "properties": {
+          "description": "Location of ongoing war."
+        }
+      },
+      {
+        "id": "Shadow\u2019S Hand",
+        "type": "Organization",
+        "properties": {
+          "description": "Fortress city organization in Ravenhall."
+        }
+      },
+      {
+        "id": "Rhyvor",
+        "type": "Location",
+        "properties": {
+          "description": "Source of equipment and gold for Ravenhall."
+        }
+      },
+      {
+        "id": "Claire",
+        "type": "Person",
+        "properties": {
+          "description": "Involved in Ravenhall's development with Ilea."
+        }
+      },
+      {
+        "id": "Riverwatch",
+        "type": "Location",
+        "properties": {
+          "description": "First settlement Ilea found on Elos, location of demon rematch and investigation."
+        }
+      },
+      {
+        "id": "Elos",
+        "type": "Location",
+        "properties": {
+          "description": "World where Riverwatch is located."
+        }
+      },
+      {
+        "id": "Cerithil Hunters",
+        "type": "Organization",
+        "properties": {
+          "description": "Group of elves fighting machines in dungeons."
+        }
+      },
+      {
+        "id": "Taleen Dwarves",
+        "type": "Race",
+        "properties": {
+          "description": "Creators of machines found in dungeons."
+        }
+      },
+      {
+        "id": "Descent",
+        "type": "Location",
+        "properties": {
+          "description": "Ancient dungeon with spreading corruption."
+        }
+      },
+      {
+        "id": "Sand Elemental",
+        "type": "Monster",
+        "properties": {
+          "description": "Corrupted monster defeated by Ilea and allies on the 20th layer of the Descent."
+        }
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Ravenhall",
+        "type": "VISITED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "1"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Riverwatch",
+        "type": "VISITED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "1"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Cerithil Hunters",
+        "type": "IS_ALLY",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "1"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Descent",
+        "type": "VISITED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "1"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Sand Elemental",
+        "type": "KILLED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "1"
+        }
+      },
+      {
+        "source": "Ravenhall",
+        "target": "Shadow\u2019S Hand",
+        "type": "LOCATED_IN",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "1"
+        }
+      },
+      {
+        "source": "Cerithil Hunters",
+        "target": "Taleen Dwarves",
+        "type": "IS_HOSTILE",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "1"
+        }
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "--- Page 2 ---\nthreatening to endanger the beings of the Descent and everyone that lived in\nHallowfort.\nWith the immediate threats dealt with, Ilea explored the rest of the\ndungeon accompanied by a little Fae friend she had made along the way, a\nbeing she calls Violence. At the bottom of the facility, Ilea helped drain and\ndisperse a large amount of gathered mana before she learned that the\nancient facilities within the dungeon had once belonged to the Ascended,\nbeings from another realm that had come to Elos with an unknown purpose.\nWhen Ilea and Violence looked for answers within an enchanted device,\nthey found out that the facility was not abandoned at all. An Ascended\nnamed Vor Elenthir appeared and confronted Ilea, nearly killing her in the\nensuing battle.\nShe escaped with the help of Violence and was invited to its home,\nwhere she learned the true nature of the Fae. With some reassurance, some\nquestions answered, and new questions raised, she finally returned to\nRavenhall\u2026\n\n\n--- Page 3 ---\nONE\n\n[Source: Azarinth_Healer_Book_5-9-794.pdf | Page: 2]",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Violence",
+        "type": "Monster",
+        "properties": {
+          "description": "A little Fae friend of Ilea"
+        }
+      },
+      {
+        "id": "Vor Elenthir",
+        "type": "Person",
+        "properties": {
+          "description": "An Ascended who confronted Ilea"
+        }
+      },
+      {
+        "id": "Ascended",
+        "type": "Race",
+        "properties": {
+          "description": "Beings from another realm that had come to Elos"
+        }
+      },
+      {
+        "id": "Hallowfort",
+        "type": "Location",
+        "properties": {}
+      },
+      {
+        "id": "Descent",
+        "type": "Location",
         "properties": {}
       },
       {
@@ -13,18 +198,131 @@
         "properties": {}
       },
       {
-        "id": "Lys",
+        "id": "Elos",
         "type": "Location",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Violence",
+        "type": "IS_ALLY",
         "properties": {}
       },
       {
-        "id": "Shadow'S Hand",
-        "type": "Organization",
+        "source": "Ilea",
+        "target": "Vor Elenthir",
+        "type": "ENCOUNTERED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "2"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Vor Elenthir",
+        "type": "IS_HOSTILE",
         "properties": {}
       },
       {
-        "id": "Rhyvor",
+        "source": "Ilea",
+        "target": "Ravenhall",
+        "type": "VISITED",
+        "properties": {}
+      },
+      {
+        "source": "Ascended",
+        "target": "Elos",
+        "type": "LOCATED_IN",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "--- Page 3 ---\nONE\n\n\n--- Page 4 ---\nCatching Up\nIlea leaned against the windowsill in Claire\u2019s office. She sipped from her\nale and looked out onto the busy square beyond. There were hundreds of\npeople around \u2013 merchants, workers, civilians, guards, and adventurers\nequipped with armor, robes, staffs, swords, and other weapons. She\nwondered what kind of magic and skills they all had.\nA smile crept onto her face. Last time she had trained her resistances\nwith the help of local adventurers and Shadows, it hadn\u2019t been particularly\neffective. But now, she had her upgraded Avatar of Ash available, which\nmeant she could essentially deactivate her resistances and have even lower-\nlevel people help her train again.\nI wonder if it will be enough or if my general resilience is just too high\nat this point.\nHigh-level problems.\nShe sipped her ale, very much aware of the joyous, and potentially a\nlittle bit smug, expression on her face. She enjoyed the cool breeze flowing\ninto the office. The nearby mountains were still topped with snow, but she\ncould tell that spring was on the horizon.\nShe felt a deep calm settle within her as she looked out onto the square\nand the alleys beyond. It felt like she could finally relax after a long\nadventure. The last week or two with Violence hadn\u2019t been particularly\nstressful except for the last few days, and here in Ravenhall, she always felt\nlike she was coming home.\nThe feeling reminded her of her first time in Riverwatch. The strange\nbut exciting sensation of seeing people in actual, real-life armor equipped\n\n[Source: Azarinth_Healer_Book_5-9-794.pdf | Page: 3]",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {
+          "description": "Leaning against the windowsill in Claire's office, sipping ale, contemplating training resistances."
+        }
+      },
+      {
+        "id": "Claire'S Office",
         "type": "Location",
+        "properties": {
+          "description": "Office with a view of a busy square, located in Ravenhall."
+        }
+      },
+      {
+        "id": "Ravenhall",
+        "type": "Location",
+        "properties": {
+          "description": "A place where Ilea feels at home, with a busy square and nearby snow-topped mountains."
+        }
+      },
+      {
+        "id": "Avatar Of Ash",
+        "type": "Skill",
+        "properties": {
+          "description": "An upgraded skill that allows Ilea to deactivate her resistances for training."
+        }
+      },
+      {
+        "id": "Riverwatch",
+        "type": "Location",
+        "properties": {
+          "description": "A place that gave Ilea a strange but exciting sensation upon first visit."
+        }
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Claire'S Office",
+        "type": "VISITED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "3"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Ravenhall",
+        "type": "VISITED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "3"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Avatar Of Ash",
+        "type": "HAS_SKILL",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "3"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Riverwatch",
+        "type": "VISITED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "3"
+        }
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "--- Page 5 ---\nwith medieval weapons to hunt for and defend against monsters.\nA lot had happened since then.\nShe was taken out of her contemplations when she heard and saw a\nmetal tube arrive in a contraption set into the wall behind Claire\u2019s desk.\nClaire took the tube and opened it. She unwrapped a small piece of\npaper and then made it vanish. She noticed Ilea\u2019s questioning stare. \u201cThis?\nA new addition. Turns out two brilliant young enchanters equipped with the\nresources of Lilith can create some interesting prototypes. I heard about\nAki\u2019s new body too. Though I don\u2019t think that was their doing entirely.\nTrian should arrive shortly.\u201d\n\u201cA long-distance messaging device?\u201d Ilea asked.\n\u201cJust within the city for now, but we\u2019re thinking about broader\napplications.\u201d\nIlea looked at the device and then moved her attention back to the\nsquare. Seems like Iana and Christopher haven\u2019t been idle.\nTrian arrived a few minutes later. He burst into the room and glared at\nIlea, then smiled. \u201cYou\u2019re alive.\u201d\n\u201cWhy wouldn\u2019t I be?\u201d\nHe stomped toward her. \u201cAll of those paintings. And then Cless couldn\u2019t\npaint you anymore. What on Elos were you doing? We thought you were on\na mission to Riverwatch!\u201d\nIlea summoned the sphere that Catelyn had given her, throwing it up\nand then catching it in a playful manner. \u201cIt\u2019s kind of a long story.\u201d\nShe told them about her adventures. About her time in Riverwatch, her\ncall to the north, her adventures in the Descent, and finally, her encounter\nwith the Ascended and the visit to the Fae.\nAfter the initial shock and stunned expressions, Claire and Trian\nsuggested they take a walk to better digest everything she had told them.\nIlea stopped at a street food vendor nearby and got all of them a few\nmeat skewers.\n\u201cIt\u2019s a lot to take in,\u201d Trian said, biting into his skewer. \u201cA sun? Really?\nThey took it? And one of them is still alive? Ascended, you said.\u201d\nIlea started eating too. \u201cYeah, I agree it sounds ridiculous. But you\n\n[Source: Azarinth_Healer_Book_5-9-794.pdf | Page: 5]",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
         "properties": {}
       },
       {
@@ -33,74 +331,494 @@
         "properties": {}
       },
       {
+        "id": "Trian",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Iana",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Christopher",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Aki",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Cless",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Catelyn",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Lilith",
+        "type": "Organization",
+        "properties": {}
+      },
+      {
         "id": "Riverwatch",
         "type": "Location",
         "properties": {}
       },
       {
-        "id": "Elos",
+        "id": "Descent",
         "type": "Location",
         "properties": {}
       },
       {
-        "id": "Cerithil Hunters",
+        "id": "Ascended",
         "type": "Organization",
         "properties": {}
       },
       {
-        "id": "Taleen Dwarves",
+        "id": "Fae",
         "type": "Organization",
         "properties": {}
       }
     ],
     "relationships": [
       {
-        "source": "Ilea",
-        "target": "Ravenhall",
-        "type": "VISITED",
-        "properties": {}
+        "source": "Claire",
+        "target": "Lilith",
+        "type": "HAS_ALIAS",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "5"
+        }
       },
       {
         "source": "Ilea",
         "target": "Riverwatch",
         "type": "VISITED",
-        "properties": {}
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "5"
+        }
       },
       {
         "source": "Ilea",
-        "target": "Elos",
-        "type": "ARRIVED_ON",
+        "target": "Descent",
+        "type": "VISITED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "5"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Ascended",
+        "type": "ENCOUNTERED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "5"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Fae",
+        "type": "VISITED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "5"
+        }
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "They took it? And one of them is still alive? Ascended, you said.\u201d\nIlea started eating too. \u201cYeah, I agree it sounds ridiculous. But you\nshould have seen the mana, let alone the Fae. I\u2019m definitely not gonna\ndoubt anything Superfae told me,\u201d Ilea said and laughed.\nThey made their way to the second wall, one of three now protecting the\ncity. Stopping near a building overgrown with ivy, Ilea spread her wings\n\n[Source: Azarinth_Healer_Book_5-9-794.pdf | Page: 5]",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
         "properties": {}
+      },
+      {
+        "id": "Superfae",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Fae",
+        "type": "Race",
+        "properties": {}
+      },
+      {
+        "id": "City",
+        "type": "Location",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Superfae",
+        "type": "HAS_ALIAS",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "5"
+        }
+      },
+      {
+        "source": "City",
+        "target": "Fae",
+        "type": "LOCATED_IN",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "5"
+        }
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "--- Page 6 ---\nand helped Claire up onto the roof.\nTrian landed nearby. \u201cAnd you\u2019re about to get a third Class.\u201d His eyes\nwere wide with wonder and just a hint of jealousy. \u201cNever thought a\nShadow from my team would become the first human with three Classes.\u201d\nClaire dusted off her blue and white robe, then cleared her throat. \u201cWe\ndon\u2019t know if she\u2019s going to be the first. I highly doubt it, actually. Just\nbecause people don\u2019t go around sharing this kind of information doesn\u2019t\nmean nobody knows about it.\u201d\n\u201cI agree,\u201d Ilea said. \u201cMy healing Class certainly helps, but while my\nmethods may be unorthodox, other people out there would have had\ndecades or even centuries to work on their magic and Classes.\u201d\n\u201cEither way,\u201d Trian said and smiled, biting off a piece from his skewer.\n\u201cIt\u2019s exciting!\u201d\nIlea grinned. She agreed, of course she did. She could hardly stop\nherself from going out there again, finding a few high-level creatures, and\nkilling them to level up the rest of the way, however long that \u2018rest of the\nway\u2019 was. But she told herself to be patient, to get a few more general skills,\nachievements, and resistances to the third tier before she pushed her Classes\nfurther.\nShe bit into a meat skewer. \u201cAny news on Kyrian?\u201d\n\u201cHe\u2019s alive. And fighting. And he seems stronger too. But it doesn\u2019t\nlook like he\u2019s changing locations,\u201d Claire said.\n\u201cHe got himself some birds,\u201d Trian said.\n\u201cBirds?\u201d Ilea asked.\nClaire smiled. \u201cYeah. Wherever he is, it doesn\u2019t look like there are any\nsapient creatures around. Maybe he saved them, or maybe he\u2019s just taking\ncare of them. But yeah, we\u2019re waiting for news from the enchanters as it\ndoes seem like he\u2019ll need help to get back.\u201d\nIlea nodded. \u201cI\u2019ll be there whenever we have a way to get to him. I\u2019m\nglad we at least have Cless\u2019 paintings to know that he\u2019s alive.\u201d\nShe heard a few conversations going on nearby and glanced over the\nstone railing of the roof. A merchant was having an argument with the\n\n[Source: Azarinth_Healer_Book_5-9-794.pdf | Page: 6]",
+    "nodes": [
+      {
+        "id": "Claire",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Trian",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Kyrian",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Cless",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Healing Class",
+        "type": "Class",
+        "properties": {}
+      },
+      {
+        "id": "Shadow",
+        "type": "Class",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Healing Class",
+        "type": "HAS_CLASS",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "6"
+        }
+      },
+      {
+        "source": "Claire",
+        "target": "Shadow",
+        "type": "HAS_CLASS",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "6"
+        }
+      },
+      {
+        "source": "Kyrian",
+        "target": "Cless",
+        "type": "IS_ALLY",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "6"
+        }
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "She heard a few conversations going on nearby and glanced over the\nstone railing of the roof. A merchant was having an argument with the\nShadowguard, with some adventurers loitering nearby. She assumed they\nwanted to help the merchant get her way to maybe get a discount from her\nafter. It was hard to believe that the demon summoning had devastated\nRavenhall and its population less than two years prior.\n\u201cFeels like the city is back to how it was when I first arrived.\u201d\n\n[Source: Azarinth_Healer_Book_5-9-794.pdf | Page: 6]",
+    "nodes": [
+      {
+        "id": "Merchant",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Shadowguard",
+        "type": "Organization",
+        "properties": {}
+      },
+      {
+        "id": "Adventurers",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Ravenhall",
+        "type": "Location",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Merchant",
+        "target": "Shadowguard",
+        "type": "ENCOUNTERED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "6"
+        }
+      },
+      {
+        "source": "Adventurers",
+        "target": "Merchant",
+        "type": "IS_ALLY",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "6"
+        }
       },
       {
         "source": "Ravenhall",
-        "target": "Shadow'S Hand",
-        "type": "AFFILIATED_WITH",
+        "target": "Shadowguard",
+        "type": "LOCATED_IN",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "6"
+        }
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "--- Page 7 ---\nClaire smiled, though a hint of bitterness showed on her face. \u201cThings\nhave been moving quickly, more so due to the war and our recent\nindependence. The population is higher than it was before the demon\nsummoning, and we\u2019re still growing, building deep into the mountain below\nwhile reinforcing the walls and the guard.\u201d She sighed and sat down,\nleaning against the stone railing as she looked up at the sky. \u201cIt\u2019s sobering,\nto say the least. To hear about blood corruption, Elementals, and ancient\nrealm-traveling civilizations with the capability of removing entire suns\nfrom the sky.\u201d\n\u201cWe may be a few thousand years behind, but we\u2019re here now. All we\ncan do is work with what we have,\u201d Trian said. \u201cBesides, Ilea has cracked\nthe three hundreds in just a few years. Who\u2019s to say others won\u2019t follow\nsuit?\u201d\n\u201cOthers? Do you have anyone specific in mind?\u201d Ilea asked.\nTrian smiled from ear to ear. \u201cCome on, I\u2019ll show you.\u201d\n\n\n--- Page 8 ---\nTWO\n\n[Source: Azarinth_Healer_Book_5-9-794.pdf | Page: 7]",
+    "nodes": [
+      {
+        "id": "Claire",
+        "type": "Person",
         "properties": {}
+      },
+      {
+        "id": "Trian",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {
+          "level": "300"
+        }
+      },
+      {
+        "id": "Demon Summoning",
+        "type": "Skill",
+        "properties": {}
+      },
+      {
+        "id": "Blood Corruption",
+        "type": "Skill",
+        "properties": {}
+      },
+      {
+        "id": "Elementals",
+        "type": "Monster",
+        "properties": {}
+      },
+      {
+        "id": "Ancient Realm-Traveling Civilizations",
+        "type": "Organization",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Claire",
+        "target": "Demon Summoning",
+        "type": "ENCOUNTERED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "7"
+        }
+      },
+      {
+        "source": "Claire",
+        "target": "Blood Corruption",
+        "type": "ENCOUNTERED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "7"
+        }
+      },
+      {
+        "source": "Claire",
+        "target": "Elementals",
+        "type": "ENCOUNTERED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "7"
+        }
+      },
+      {
+        "source": "Claire",
+        "target": "Ancient Realm-Traveling Civilizations",
+        "type": "ENCOUNTERED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "7"
+        }
       },
       {
         "source": "Ilea",
-        "target": "Claire",
-        "type": "COLLABORATED_WITH",
+        "target": "Ancient Realm-Traveling Civilizations",
+        "type": "ENCOUNTERED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "7"
+        }
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "--- Page 8 ---\nTWO\n\n\n--- Page 9 ---\nPerformance\nNathan walked toward the main hall of the headquarters, careful not to\nattract any unnecessary attention. He had joined the Sentinels three weeks\nprior, but he still wasn\u2019t entirely sure if it had been a good idea. After\neverything that had happened in Veraan, of course he would take this\nopportunity. It was a promise of power given only to the desperate. He\nwasn\u2019t blind to it, or to the dangers something like this could pose. But how\ncould he refuse?\nHe hadn\u2019t been able to protect them.\nNathan sighed. What was done was done. He was here now, and if he\nplanned to survive, to get stronger, he had to stay in the now.\nThey were supposed to check the notice board at least once at noon and\nonce after dinner, just in case something came up.\nFor two weeks now, he had participated in the hastily thrown-together\nlessons this organization provided. The teachers certainly had charisma and\npower to boot, but the topics they were talking about seemed a little\ndirectionless.\nThere were general combat classes, classes on battle strategy, first aid,\nthe human body, monsters, even alchemy and a class on herbs. These were\nall things that he expected from an organization that was supposed to make\nthem into healers who could also defend themselves and fight monsters, but\nit just kind of felt like the teachers were figuring things out as they went.\nThat was one of the reasons why his initial suspicions had calmed a\nlittle. He had taken the offer to join based on his previous employment at a\nfew shops that Lilith owned and her reputation in the city. But seeing how\n\n[Source: Azarinth_Healer_Book_5-9-794.pdf | Page: 8]",
+    "nodes": [
+      {
+        "id": "Nathan",
+        "type": "Person",
+        "properties": {
+          "description": "Joined the Sentinels three weeks ago after events in Veraan."
+        }
+      },
+      {
+        "id": "Sentinels",
+        "type": "Organization",
+        "properties": {
+          "description": "An organization offering power and training, including combat, strategy, and healing."
+        }
+      },
+      {
+        "id": "Veraan",
+        "type": "Location",
+        "properties": {
+          "description": "A place associated with past events involving Nathan."
+        }
+      },
+      {
+        "id": "Lilith",
+        "type": "Person",
+        "properties": {
+          "description": "Owner of several shops and has a reputation in the city."
+        }
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Nathan",
+        "target": "Sentinels",
+        "type": "HAS_CLASS",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "8"
+        }
+      },
+      {
+        "source": "Nathan",
+        "target": "Veraan",
+        "type": "VISITED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "8"
+        }
+      },
+      {
+        "source": "Nathan",
+        "target": "Lilith",
+        "type": "HAS_ALIAS",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "8"
+        }
+      }
+    ]
+  },
+  {
+    "source_text_chunk": "--- Page 10 ---\nthe faculty seemed to still be figuring things out, he just couldn\u2019t see it as\nsome kind of nefarious plot to sacrifice or brainwash young people for\nsome egomaniacal purpose.\nHis father had warned him of those types more than once.\nThe main hall was comprised mostly of wooden benches and tables.\nSupport beams reached up to the stone ceiling in the underground hall, and\nwarm magical lamps embedded into both the ceiling and walls provided\nlight. It was simple but served its purpose. What really caused everyone to\ngather here was the food that was available all day.\nAnd not the kind of food Nathan had expected from an organization\nwithout an entry fee. It might have been the most delicious food he\u2019d ever\neaten. If he hadn\u2019t known this whole thing was funded by Lilith, he would\nhave been quite confused rather than just suspicious.\nCrowded around the notice board were other Sentinels, talking either in\nwhispers or loud, excited tones.\n\u201cHey, Nathan!\u201d a voice boomed from off to his right. A few people in\nthe main hall glanced his way but returned to their own conversations a\nmoment later.\n\u201cLuke,\u201d Nathan said as he turned and nodded at the man.\n[Farmer \u2013 lvl 28]\nThat was an awkward nod if I\u2019ve ever seen one. He\u2019s a farmer and,\nwhat, five, six years younger than you? Get your shit together.\nIt didn\u2019t help that the man was around twice his size, his clothes barely\ncontaining the muscles beneath.\n\u201cDid you hear the news?\u201d Luke asked as he approached, placing a hand\non Nathan\u2019s shoulder in a casual manner.\nNathan winced slightly, then steeled himself. \u201cWe just finished our\ncombat lesson. I haven\u2019t had time yet to check. What is it?\u201d\nLuke grinned and took several steps back. \u201cClasses are canceled this\nafternoon. We are to gather in the lowest training hall.\u201d\nThat was indeed some news.\nThey made their way over to the food court in the same hall.\n\u201cWhat do you think that\u2019s all about, then?\u201d Nathan absentmindedly\n\n[Source: Azarinth_Healer_Book_5-9-794.pdf | Page: 10]",
+    "nodes": [
+      {
+        "id": "Nathan",
+        "type": "Person",
         "properties": {}
       },
       {
-        "source": "Rhyvor",
-        "target": "Ravenhall",
-        "type": "ADDED_RESOURCES_TO",
+        "id": "Luke",
+        "type": "Person",
+        "properties": {
+          "level": "28",
+          "description": "Farmer"
+        }
+      },
+      {
+        "id": "Lilith",
+        "type": "Person",
         "properties": {}
       },
       {
-        "source": "Ilea",
-        "target": "Cerithil Hunters",
-        "type": "TRAINED_WITH",
+        "id": "Sentinels",
+        "type": "Organization",
         "properties": {}
       },
       {
-        "source": "Taleen Dwarves",
-        "target": "Ilea",
-        "type": "LEFT_MACHINES_BY",
+        "id": "Main Hall",
+        "type": "Location",
+        "properties": {
+          "description": "Comprised mostly of wooden benches and tables with support beams reaching up to the stone ceiling. Warm magical lamps embedded into both the ceiling and walls provide light."
+        }
+      },
+      {
+        "id": "Lowest Training Hall",
+        "type": "Location",
         "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Nathan",
+        "target": "Luke",
+        "type": "IS_ALLY",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "10"
+        }
+      },
+      {
+        "source": "Sentinels",
+        "target": "Main Hall",
+        "type": "LOCATED_IN",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "10"
+        }
+      },
+      {
+        "source": "Sentinels",
+        "target": "Lilith",
+        "type": "IS_ALLY",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "10"
+        }
       }
     ]
   }
