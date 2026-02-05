@@ -5,12 +5,17 @@ import time
 import argparse
 import re
 from pathlib import Path
+from dotenv import load_dotenv
 from langchain_core.documents import Document
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_ollama import ChatOllama
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_neo4j import Neo4jGraph
+from langchain_openai import ChatOpenAI
+
+load_dotenv()
 
 # --- Configuration ---
 # Use /app as base directory if it exists (Docker), otherwise use current directory
@@ -19,7 +24,10 @@ DATA_DIR = APP_DIR / "data"
 INPUT_DIR = DATA_DIR / "input_docs"
 OUTPUT_DIR = DATA_DIR / "output_json"
 CHUNKS_DIR = DATA_DIR / "output_chunks"
-OLLAMA_URL = os.environ.get("OLLAMA_BASE_URL", "http://ollama:11434")
+OLLAMA_URL = os.getenv("OLLAMA_BASE_URL", "http://ollama:11434")
+NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 print(f"[i] App directory: {APP_DIR}")
 print(f"[i] Data directory: {DATA_DIR}")
@@ -54,59 +62,109 @@ for i in range(max_retries):
             print(f"   [✗] Failed to connect to Neo4j after {max_retries} attempts: {e}")
             print("   Make sure Neo4j container is running: docker-compose logs neo4j")
 
-# Setup Local LLM
-llm = ChatOllama(
-    model="llama3.1",
-    temperature=0,
-    base_url=OLLAMA_URL
+# Setup LLM
+llm = ChatOpenAI(
+    model="gpt-4o", 
+    temperature=0, 
+    api_key=OPENAI_API_KEY
 )
+
+# llm = ChatOllama(
+#     model="llama3.1",
+#     temperature=0,
+#     base_url=OLLAMA_URL
+# )
 
 allowed_nodes = [
     "Person",    # Sentient individuals like Ilea [cite: 2]
     "Race",      # Biological category like Human [cite: 73]
     "Class",     # System paths or academic majors [cite: 82, 149]
     "Skill",     # System abilities like Identify [cite: 212]
-    "Creature",  # Individual monsters like the Drake [cite: 211]
-    "Species",   # Monster categories like Drake [cite: 209]
+    "Monster",  # Individual monsters like the Drake [cite: 211]
     "Location",  # Geographical areas like the Forest [cite: 160]
-    "Item"       # Objects of interest like the Blue Flower [cite: 169]
+    "Item",       # Objects of interest like the Blue Flower [cite: 169]
+    "Organization" # Factions or groups (optional, for future expansion)
 ]
 
 allowed_relationships = [
-    # Identity and Biology
-    ("Person", "BELONGS_TO_RACE", "Race"),        # Ilea is Human [cite: 73, 116]
-    ("Creature", "IS_SPECIES", "Species"),        # The monster is a Drake [cite: 211]
-    
-    # System Progression
-    ("Person", "HAS_CLASS", "Class"),             # Ilea studies Medicine or is a Fighter [cite: 82, 149]
-    ("Person", "LEARNED_SKILL", "Skill"),         # Ilea learned Identify lvl 1 [cite: 212]
-    ("Class", "GRANTS_SKILL", "Skill"),           # A class provides specific abilities
-    
-    # World Interaction
-    ("Person", "ENCOUNTERED", "Creature"),        # Ilea meets the Drake [cite: 207, 210]
-    ("Creature", "KILLED", "Creature"),           # The Drake kills its prey [cite: 208]
-    ("Person", "LOCATED_IN", "Location"),         # Ilea is in the Forest [cite: 159, 160]
-    ("Creature", "LOCATED_IN", "Location"),       # Drakes live in the Forest [cite: 203]
-    ("Item", "FOUND_IN", "Location"),             # Blue flowers are in the Forest [cite: 169]
-    ("Person", "HARVESTED", "Item")               # Picking up special flora
+    "HAS_CLASS",
+    "HAS_SKILL",
+    "ENCOUNTERED",
+    "KILLED",
+    "BELONGS_TO_RACE",
+    "VISITED",
+    "LOCATED_IN",
+    "IS_HOSTILE",
+    "IS_ALLY",
+    "HAS_ALIAS"
 ]
 
 node_properties = [
-    "level",             # e.g., "lvl 1" or "lvl ??" [cite: 211, 212]
-    "description",       # e.g., "three meters, no wings" [cite: 209]
-    "rarity",            # For items or classes
-    "threat_rank",       # For creatures like the Drake [cite: 211]
-    "mana_nature",       # For locations or items [cite: 177]
-    "physical_appearance" # e.g., "glowing top" [cite: 177]
+    "description",      # Visual details or lore (e.g., "A dense forest with mana-infused trees")
+    "level",            # Crucial for LitRPG scaling (e.g., "Level 300")
+    "status",           # Current state (e.g., "Alive", "Dead", "Evolved", "Injured")
+    "attributes",       # Specific traits (e.g., "Fire resistance", "High regeneration")
 ]
+
+relationship_properties = [
+    "source_document",      
+    "source_page",       
+    "source_chunk"
+]
+
+system_prompt = (
+    "# Fantasy Realm Knowledge Graph Instructions\n"
+    "## 1. Overview\n"
+    "You are an advanced Chronicler AI designed to extract lore and system data into "
+    "structured formats for a comprehensive fantasy knowledge graph.\n"
+    "Capture every entity, attribute, and bond mentioned in the text with absolute precision. "
+    "Do not invent lore or assume stats not explicitly stated in the provided scrolls.\n"
+    "- **Nodes** represent the inhabitants, locations, and system-constructs of the realm.\n"
+    "- The goal is a high-density, interconnected map of the world's narrative state.\n\n"
+    
+    "## 2. Entity Labeling (Nodes)\n"
+    "- **Label Consistency**: Use the provided allowed labels. Map specific roles to "
+    "the base categories. \n"
+    "- **Example**: If the text mentions a 'Necromancer', label it as **'Person'**. "
+    "If it mentions a 'High Elf', label it as **'Race'**. If it mentions a 'Fireball', "
+    "label it as **'Skill'**.\n"
+    "- **Node IDs**: Use the entity's primary name found in the text (e.g., 'Ilea', "
+    "'Blackwood Forest'). Never use generic integers like 'Node_1'.\n\n"
+    
+    "## 3. Relationship Logic\n"
+    "- **Timelessness**: Focus on the state of being rather than a fleeting action. "
+    "Instead of 'LEARNED_BLINK', use **'HAS_SKILL'**. Instead of 'FOUGHT_THE_DRAKE', "
+    "use **'ENCOUNTERED'** or **'IS_HOSTILE'** depending on the outcome.\n"
+    "- **Directionality**: Ensure the relationship flows logically (e.g., [Person]->[HAS_CLASS]->[Class]).\n\n"
+    
+    "## 4. Coreference & Aliases\n"
+    "- **Entity Resolution**: Fantasy characters often have many titles. If 'The Unbound', "
+    "'Ilea', and 'she' are used, map all data to the most complete name: **'Ilea'**.\n"
+    "- Use the **'HAS_ALIAS'** relationship to link titles (e.g., [Ilea]->HAS_ALIAS->[The Unbound]).\n\n"
+    
+    "## 5. Property Extraction\n"
+    "- For every node, aggressively extract **'level'**, **'status'**, and **'attributes'**. "
+    "Example: If a character is 'Level 45 and poisoned', set level: '45' and status: 'Poisoned'.\n\n"
+    
+    "## 6. Strict Compliance\n"
+    "Follow these protocols precisely. Inaccuracy or hallucination will compromise the "
+    "integrity of the realm's history."
+)
+
+custom_prompt = ChatPromptTemplate.from_messages([
+    ("system", system_prompt),
+    ("human", "{input}"), # LLMGraphTransformer injects the chunk here
+])
 
 # The "Extractor" 
 # Note: LLMGraphTransformer works best with models that follow instructions well (like Llama 3.1)
 llm_transformer = LLMGraphTransformer(
+    prompt=custom_prompt,
     llm=llm, 
-    # allowed_nodes=allowed_nodes, 
-    # allowed_relationships=allowed_relationships,
-    # node_properties=node_properties
+    allowed_nodes=allowed_nodes, 
+    allowed_relationships=allowed_relationships,
+    node_properties=node_properties,
+    relationship_properties=relationship_properties,
 )
 
 
@@ -236,10 +294,14 @@ def process_document(file_path, mode="full"):
             
             # Update the chunk's metadata with the tracked page number
             chunk.metadata["page_label"] = current_page_label
-            chunk.metadata["page_number"] = int(current_page_label) # Useful for sorting
-            
-            # Optional: Add source filename back if it got lost
+            chunk.metadata["page_number"] = int(current_page_label)
             chunk.metadata["source"] = str(file_path)
+            
+            source_doc_name = os.path.basename(chunk.metadata["source"])
+            source_page_num = chunk.metadata["page_number"]
+            
+            # Append to the actual text content so the LLM/Embedder "sees" it
+            chunk.page_content += f"\n\n[Source: {source_doc_name} | Page: {source_page_num}]"
 
         print(f"   [i] Split into {len(chunks)} chunks. Metadata restored.")
         
@@ -250,7 +312,7 @@ def process_document(file_path, mode="full"):
         if mode == "chunks":
             return
     
-    num_chunks = 1
+    num_chunks = 10
     print(f"   [i] Extracting graph from {num_chunks} chunks (this may take time on CPU/iGPU)...")
     graph_documents = llm_transformer.convert_to_graph_documents(chunks[:num_chunks])
     

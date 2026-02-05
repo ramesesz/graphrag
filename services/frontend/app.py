@@ -1,16 +1,21 @@
 import streamlit as st
 import os
+from dotenv import load_dotenv
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_neo4j import Neo4jGraph
+from langchain_openai import ChatOpenAI
 from streamlit_agraph import agraph, Node, Edge, Config
+
+load_dotenv()
 
 # --- 1. Configuration ---
 st.set_page_config(layout="wide", page_title="Azarinth Healer Graph Chat")
 
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
 OLLAMA_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # --- 2. Initialize Connections ---
 if "graph" not in st.session_state:
@@ -25,11 +30,22 @@ if "graph" not in st.session_state:
         st.error(f"Failed to connect to Neo4j: {e}")
 
 if "llm" not in st.session_state:
-    st.session_state.llm = ChatOllama(
-        model="llama3.1", 
-        temperature=0, 
-        base_url=OLLAMA_URL
+    if not OPENAI_API_KEY:
+        st.error("OpenAI API Key not found. Please check your .env file.")
+        st.stop()
+        
+    st.session_state.llm = ChatOpenAI(
+        model="gpt-3.5-turbo", # "gpt-3.5-turbo, gpt-4o"
+        temperature=0,
+        api_key=OPENAI_API_KEY
     )
+
+# if "llm" not in st.session_state:
+#     st.session_state.llm = ChatOllama(
+#         model="llama3.1", 
+#         temperature=0, 
+#         base_url=OLLAMA_URL
+#     )
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
