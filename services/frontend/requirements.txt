@@ -7,3 +7,5 @@ langchain-neo4j==0.8.0
 langchain-ollama==1.0.1
 langchain-openai
 python-dotenv
+pyyaml
+requests

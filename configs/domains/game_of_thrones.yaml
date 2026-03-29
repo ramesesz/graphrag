@@ -1,0 +1,110 @@
+domain_id: game_of_thrones
+display_name: "Game of Thrones / A Song of Ice and Fire"
+
+allowed_nodes:
+  - Character
+  - House
+  - Location
+  - Battle
+  - Alliance
+  - Faction
+  - Title
+  - Weapon
+  - Event
+
+allowed_relationships:
+  - MEMBER_OF
+  - RULES
+  - ALLIED_WITH
+  - AT_WAR_WITH
+  - PARTICIPATED_IN
+  - TOOK_PLACE_AT
+  - HOLDS_TITLE
+  - WIELDS
+  - KILLED
+  - PRECEDED_BY
+  - BORN_IN
+  - BETRAYED
+  - HAS_ALIAS
+
+node_properties:
+  - description
+  - status
+  - allegiance
+  - sigil
+  - words
+  - season
+
+relationship_properties:
+  - source_document
+  - source_page
+  - source_chunk
+
+chunking:
+  chunk_size: 1500
+  chunk_overlap: 200
+  separators:
+    - "\n\n"
+    - "\n"
+    - "."
+    - " "
+
+llm:
+  model: gpt-4o
+  temperature: 0
+  batch_size: 25
+
+visualization:
+  node_colors:
+    Character: "#FF6B6B"
+    House: "#F59E0B"
+    Location: "#86EFAC"
+    Battle: "#FF8C42"
+    Alliance: "#60A5FA"
+    Faction: "#A78BFA"
+    Title: "#D1FAE5"
+    Weapon: "#9CA3AF"
+    Event: "#FDE68A"
+
+system_prompt: |
+  # Game of Thrones Knowledge Graph Instructions
+
+  ## Role
+  You are a Maester of the Citadel, extracting structured lore from the chronicles of Westeros
+  and Essos. Your task is to build a comprehensive knowledge graph of the world of Ice and Fire.
+
+  ## Node Rules
+  - **Character**: Any named person or creature with agency. Use their full common name.
+    ID examples: "Eddard Stark", "Daenerys Targaryen", "Jon Snow".
+    Do NOT use nicknames as the primary ID ("Ned" → use "Eddard Stark").
+  - **House**: Great and minor houses. ID format: "House Stark", "House Lannister".
+    Extract `sigil` (e.g., "Direwolf") and `words` (e.g., "Winter is Coming") as properties.
+  - **Location**: Cities, regions, castles, landmarks. ID: "Winterfell", "King's Landing", "The Wall".
+  - **Battle**: Named military engagements. ID: "Battle of the Blackwater", "Red Wedding".
+  - **Alliance**: Formal or informal pacts between houses or factions. Can be a node with properties.
+  - **Event**: Significant historical moments: "War of the Five Kings", "Long Night", "Red Wedding".
+  - **Title**: Official roles and titles: "Hand of the King", "Lord of Winterfell", "Warden of the North".
+
+  ## Relationship Rules
+  - MEMBER_OF: [Character] → [House] or [Faction]
+  - RULES: [Character] → [Location] (current rule, not historical)
+  - ALLIED_WITH / AT_WAR_WITH: [House] ↔ [House]
+  - PARTICIPATED_IN: [Character] or [House] → [Battle]
+  - TOOK_PLACE_AT: [Battle] or [Event] → [Location]
+  - HOLDS_TITLE: [Character] → [Title]
+  - KILLED: [Character] → [Character] (only when explicitly stated)
+  - PRECEDED_BY: [Event] → [Event] (chronological ordering)
+  - BORN_IN: [Character] → [Location]
+  - BETRAYED: [Character] → [Character] (only when text explicitly states betrayal)
+  - HAS_ALIAS: [Character] → [Character or Title] (for epithets like "The Imp", "Kingslayer")
+
+  ## Status Values
+  For Character nodes, set `status` to one of: Alive, Dead, Undead, Unknown.
+  Default to Unknown unless the text explicitly states the character's fate.
+
+  ## Critical Rules
+  1. Never invent alliances, battles, or deaths not explicitly stated in the text.
+  2. Use full formal names as primary IDs — aliases go in HAS_ALIAS relationships.
+  3. Multiple POV characters may describe the same event differently — extract what is written,
+     not what is implied.
+  4. Houses, not characters, often hold formal alliances. Prefer ALLIED_WITH on House nodes.

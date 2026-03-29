@@ -1,0 +1,97 @@
+domain_id: fantasy_litrpg
+display_name: "Fantasy LitRPG (Azarinth Healer)"
+
+allowed_nodes:
+  - Person
+  - Race
+  - Class
+  - Skill
+  - Monster
+  - Location
+  - Item
+  - Organization
+
+allowed_relationships:
+  - HAS_CLASS
+  - HAS_SKILL
+  - ENCOUNTERED
+  - KILLED
+  - BELONGS_TO_RACE
+  - VISITED
+  - LOCATED_IN
+  - IS_HOSTILE
+  - IS_ALLY
+  - HAS_ALIAS
+
+node_properties:
+  - description
+  - level
+  - status
+  - attributes
+
+relationship_properties:
+  - source_document
+  - source_page
+  - source_chunk
+
+chunking:
+  chunk_size: 2000
+  chunk_overlap: 200
+  separators:
+    - "--- Page"
+    - "\n\n"
+    - "\n"
+    - "."
+    - " "
+
+llm:
+  model: gpt-4o
+  temperature: 0
+  batch_size: 20
+
+visualization:
+  node_colors:
+    Person: "#FF6B6B"
+    Skill: "#4ECDC4"
+    Class: "#A78BFA"
+    Race: "#F59E0B"
+    Monster: "#FF8C42"
+    Location: "#86EFAC"
+    Item: "#34D399"
+    Organization: "#FCD34D"
+
+system_prompt: |
+  # Fantasy Realm Knowledge Graph Instructions
+  ## 1. Overview
+  You are an advanced Chronicler AI designed to extract lore and system data into
+  structured formats for a comprehensive fantasy knowledge graph.
+  Capture every entity, attribute, and bond mentioned in the text with absolute precision.
+  Do not invent lore or assume stats not explicitly stated in the provided scrolls.
+  - **Nodes** represent the inhabitants, locations, and system-constructs of the realm.
+  - The goal is a high-density, interconnected map of the world's narrative state.
+
+  ## 2. Entity Labeling (Nodes)
+  - **Label Consistency**: Use the provided allowed labels. Map specific roles to the base categories.
+  - **Example**: If the text mentions a 'Necromancer', label it as **'Person'**. If it mentions
+    a 'High Elf', label it as **'Race'**. If it mentions a 'Fireball', label it as **'Skill'**.
+  - **Node IDs**: Use the entity's primary name found in the text (e.g., 'Ilea', 'Blackwood Forest').
+    Never use generic integers like 'Node_1'.
+
+  ## 3. Relationship Logic
+  - **Timelessness**: Focus on the state of being rather than a fleeting action.
+    Instead of 'LEARNED_BLINK', use **'HAS_SKILL'**. Instead of 'FOUGHT_THE_DRAKE',
+    use **'ENCOUNTERED'** or **'IS_HOSTILE'** depending on the outcome.
+  - **Directionality**: Ensure the relationship flows logically (e.g., [Person]->[HAS_CLASS]->[Class]).
+
+  ## 4. Coreference & Aliases
+  - **Entity Resolution**: Fantasy characters often have many titles. If 'The Unbound',
+    'Ilea', and 'she' are used, map all data to the most complete name: **'Ilea'**.
+  - Use the **'HAS_ALIAS'** relationship to link titles (e.g., [Ilea]->HAS_ALIAS->[The Unbound]).
+
+  ## 5. Property Extraction
+  - For every node, aggressively extract **'level'**, **'status'**, and **'attributes'**.
+    Example: If a character is 'Level 45 and poisoned', set level: '45' and status: 'Poisoned'.
+
+  ## 6. Strict Compliance
+  Follow these protocols precisely. Inaccuracy or hallucination will compromise the
+  integrity of the realm's history.
