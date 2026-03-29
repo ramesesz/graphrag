@@ -1,0 +1,121 @@
+domain_id: stvo_stvozo
+display_name: "Deutsches Verkehrsrecht (StVO/StVZO)"
+
+allowed_nodes:
+  - Paragraph
+  - Rule
+  - VehicleCategory
+  - PersonRole
+  - RoadType
+  - Requirement
+  - Prohibition
+  - Exception
+  - Violation
+  - Fine
+  - Penalty
+  - Permit
+  - Authority
+  - Definition
+
+allowed_relationships:
+  - DEFINED_IN
+  - APPLIES_TO
+  - APPLIES_ON
+  - REQUIRES
+  - PROHIBITS
+  - PERMITS
+  - HAS_EXCEPTION
+  - EXCEPTION_FOR
+  - CONSTITUTES
+  - PUNISHED_BY
+  - REGULATED_BY
+  - ENFORCED_BY
+  - REFERENCES
+  - SUPERSEDED_BY
+
+node_properties:
+  - paragraph_number
+  - paragraph_title
+  - law_source
+  - text_excerpt
+  - absatz
+  - satz
+  - amount_eur
+  - points_flensburg
+  - ban_duration_months
+  - vehicle_class
+  - effective_date
+
+relationship_properties:
+  - source_document
+  - source_page
+  - source_chunk
+
+chunking:
+  chunk_size: 1000
+  chunk_overlap: 150
+  separators:
+    - "§"
+    - "\n\n"
+    - "\n"
+    - "."
+
+llm:
+  model: gpt-4o
+  temperature: 0
+  batch_size: 15
+
+visualization:
+  node_colors:
+    Paragraph: "#3B82F6"
+    Rule: "#60A5FA"
+    Violation: "#EF4444"
+    Fine: "#F97316"
+    Penalty: "#DC2626"
+    Prohibition: "#FCA5A5"
+    Requirement: "#BFDBFE"
+    Exception: "#9CA3AF"
+    VehicleCategory: "#34D399"
+    PersonRole: "#6EE7B7"
+    RoadType: "#A7F3D0"
+    Permit: "#FDE68A"
+    Authority: "#C4B5FD"
+    Definition: "#E5E7EB"
+
+system_prompt: |
+  # Deutsches Verkehrsrecht — Knowledge Graph Anweisungen
+
+  ## Rolle
+  Du bist ein juristischer Wissens-Ingenieur, der strukturierte Daten aus deutschen
+  Verkehrsgesetzen extrahiert (Straßenverkehrs-Ordnung / StVO und
+  Straßenverkehrs-Zulassungs-Ordnung / StVZO).
+
+  ## Kritische Regeln
+  1. Paraphrasiere juristischen Text NIEMALS. Wenn du einen Rule- oder Requirement-Knoten
+     extrahierst, kopiere den relevanten Text wörtlich in die `text_excerpt`-Eigenschaft.
+  2. Jeder Rule- und Paragraph-Knoten MUSS eine `paragraph_number`-Eigenschaft haben
+     (z.B. "§ 3 Abs. 3 Nr. 1 StVO").
+  3. Jeder Fine-Knoten MUSS eine `amount_eur`-Eigenschaft mit dem numerischen Wert haben.
+  4. Verwende präzise deutsche Rechtsterminologie. Knoten-IDs verwenden den offiziellen
+     deutschen Begriff (z.B. "§ 3 StVO", "Kraftfahrzeug", "Fahrverbot").
+  5. Wenn ein Paragraph auf einen anderen verweist (z.B. "gemäß § 18"), erstelle eine
+     REFERENCES-Beziehung.
+  6. Unterscheide sorgfältig: Ein Violation (Tatbestand) ist verschieden von einer Prohibition.
+     Eine Prohibition ist die Regel; ein Violation ist der konkrete definierte Verstoß dagegen.
+  7. Die `law_source`-Eigenschaft muss entweder "StVO" oder "StVZO" sein — niemals leer.
+  8. Unterscheide zwischen "Kraftfahrzeug" (Motorfahrzeug) und "Fahrzeug" (auch Fahrrad) —
+     das deutsche Recht unterscheidet diese Begriffe präzise.
+
+  ## Sprache
+  Der Text ist auf Deutsch. Extrahiere Knoten-IDs und Eigenschaftswerte auf Deutsch.
+  Der Graph wird auf Deutsch abgefragt. Übersetze nicht.
+
+  ## Knoten-Beispiele
+  - Paragraph: ID="§ 3 StVO", paragraph_number="§ 3", paragraph_title="Geschwindigkeit",
+    law_source="StVO"
+  - Rule: ID="§ 3 Abs. 3 Nr. 1 StVO", text_excerpt="Innerhalb geschlossener Ortschaften...
+    höchstens 50 km/h", law_source="StVO"
+  - Fine: ID="Bußgeld Geschwindigkeit innerorts 10-15 km/h", amount_eur=30
+  - Penalty: ID="Fahrverbot 1 Monat", ban_duration_months=1, points_flensburg=0
+  - VehicleCategory: ID="Kraftfahrzeug", vehicle_class="Kfz"
+  - RoadType: ID="Innerorts"
