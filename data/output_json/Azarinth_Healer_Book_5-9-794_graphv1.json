@@ -1,0 +1,107 @@
+[
+  {
+    "source_text_chunk": "--- Page 1 ---\nThe story so far\u2026\nWhen Ilea returned from the north, she found that Ravenhall was back on\nthe upswing. With the war in Lys at a stalemate, refugees, merchants, and\ncraftspeople looking for safety and distance from the ongoing conflict were\nfinding a new home in the fortress city of the Shadow\u2019s Hand.\nWith all the equipment and gold from the vaults of Rhyvor added to the\ncoffers of the city, Ilea and Claire laid the foundations for what was to\ncome. An independent Ravenhall with its own guard and council, perhaps\neven its own healing organization.\nHer friends and allies were hard at work, so Ilea went to check in on\nRiverwatch, the first settlement she\u2019d found when she arrived on Elos. Her\njourney led her to a rematch with a demon she had fought some time ago\nand an investigation into the underbelly of Riverwatch. She met and trained\nwith a group of elves that were part of the Cerithil Hunters, elves who had\nforsaken their domains to go into dungeons and fight the machines left\nbehind by the Taleen dwarves, machines that Ilea is very familiar with.\nBefore she could go back to Ravenhall, Ilea was called to help in the\nnorth, where a corruption had started spreading amongst the monsters of the\nDescent. Frenzied creatures were coming up to the first layer of the ancient\ndungeon and endangering the settlers and scavengers that lived there.\nShe was joined by a group of powerful friends and allies, and they dove\ninto the unknown to find the source of the corruption and the fate of the\nexpedition that had gone into the dungeon before. Countless monster battles\nand days of resistance training finally brought Ilea to the 20th layer, where\nboth she and her allies battled and defeated the corrupted Sand Elemental",
+    "nodes": [
+      {
+        "id": "Ilea",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Ravenhall",
+        "type": "Location",
+        "properties": {}
+      },
+      {
+        "id": "Lys",
+        "type": "Location",
+        "properties": {}
+      },
+      {
+        "id": "Shadow'S Hand",
+        "type": "Organization",
+        "properties": {}
+      },
+      {
+        "id": "Rhyvor",
+        "type": "Location",
+        "properties": {}
+      },
+      {
+        "id": "Claire",
+        "type": "Person",
+        "properties": {}
+      },
+      {
+        "id": "Riverwatch",
+        "type": "Location",
+        "properties": {}
+      },
+      {
+        "id": "Elos",
+        "type": "Location",
+        "properties": {}
+      },
+      {
+        "id": "Cerithil Hunters",
+        "type": "Organization",
+        "properties": {}
+      },
+      {
+        "id": "Taleen Dwarves",
+        "type": "Organization",
+        "properties": {}
+      }
+    ],
+    "relationships": [
+      {
+        "source": "Ilea",
+        "target": "Ravenhall",
+        "type": "VISITED",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "Riverwatch",
+        "type": "VISITED",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "Elos",
+        "type": "ARRIVED_ON",
+        "properties": {}
+      },
+      {
+        "source": "Ravenhall",
+        "target": "Shadow'S Hand",
+        "type": "AFFILIATED_WITH",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "Claire",
+        "type": "COLLABORATED_WITH",
+        "properties": {}
+      },
+      {
+        "source": "Rhyvor",
+        "target": "Ravenhall",
+        "type": "ADDED_RESOURCES_TO",
+        "properties": {}
+      },
+      {
+        "source": "Ilea",
+        "target": "Cerithil Hunters",
+        "type": "TRAINED_WITH",
+        "properties": {}
+      },
+      {
+        "source": "Taleen Dwarves",
+        "target": "Ilea",
+        "type": "LEFT_MACHINES_BY",
+        "properties": {}
+      }
+    ]
+  }
+]
