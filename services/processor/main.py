@@ -24,6 +24,7 @@ from langchain_neo4j import Neo4jGraph
 from langchain_openai import ChatOpenAI
 
 from pipeline.config_loader import DomainConfig, load_domain_config, list_domains
+from pipeline.embedder import LocalEmbedder, embed_graph_documents, ensure_vector_index
 
 load_dotenv()
 
@@ -58,6 +59,7 @@ for i in range(max_retries):
         )
         graph.refresh_schema()
         logger.info("Connected to Neo4j")
+        ensure_vector_index(graph)
         break
     except Exception as e:
         remaining_attempts = max_retries - i - 1
@@ -208,7 +210,7 @@ def _convert_with_retry(llm_transformer, batch, max_retries: int = 8):
             time.sleep(wait)
 
 
-def process_document(file_path: str, mode: str, config: DomainConfig) -> None:
+def process_document(file_path: str, mode: str, config: DomainConfig, embedder=None) -> None:
     """
     Process a document based on the specified mode.
 
@@ -255,6 +257,8 @@ def process_document(file_path: str, mode: str, config: DomainConfig) -> None:
 
     # Build transformer from domain config (loaded fresh per document to use correct schema)
     llm_transformer = build_transformer(config)
+    if embedder is None and graph:
+        embedder = LocalEmbedder()
 
     batch_size = config.llm.batch_size
     total_chunks = len(chunks)
@@ -271,6 +275,7 @@ def process_document(file_path: str, mode: str, config: DomainConfig) -> None:
 
         if graph:
             graph.add_graph_documents(batch_docs)
+            embed_graph_documents(graph, batch_docs, embedder)
 
         # Save incrementally so progress survives a later failure
         save_graph_to_json(all_graph_documents, json_filename)
@@ -317,6 +322,8 @@ Examples:
         logger.error("Could not connect to Neo4j. Cannot run in 'full' or 'graph' mode.")
         return
 
+    embedder = LocalEmbedder() if graph else None
+
     # Look for documents in the domain-specific subdirectory, falling back to the root input dir
     domain_input_dir = INPUT_DIR / args.domain
     search_dir = domain_input_dir if domain_input_dir.exists() else INPUT_DIR
@@ -335,7 +342,7 @@ Examples:
 
     for input_file in input_files:
         try:
-            process_document(input_file, mode=args.mode, config=config)
+            process_document(input_file, mode=args.mode, config=config, embedder=embedder)
         except Exception as e:
             logger.error("Error processing %s: %s", input_file, e)
 

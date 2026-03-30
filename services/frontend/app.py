@@ -257,7 +257,24 @@ Answer:"""
     return [e.strip() for e in response.content.split(",") if e.strip()]
 
 
-# Fulltext index query — much faster and more accurate than CONTAINS
+# 1. Vector similarity — semantically closest nodes to the query embedding
+_CYPHER_VECTOR = """
+CALL db.index.vector.queryNodes('node_embeddings', 5, $query_vec)
+YIELD node AS center, score
+MATCH (center)-[rel]-(neighbor)
+RETURN
+    center.id AS center_id,
+    labels(center)[0] AS center_label,
+    properties(center) AS center_props,
+    type(rel) AS rel_type,
+    properties(rel) AS rel_props,
+    neighbor.id AS neighbor_id,
+    labels(neighbor)[0] AS neighbor_label,
+    properties(neighbor) AS neighbor_props
+LIMIT 50
+"""
+
+# 2. Fulltext index — Lucene BM25 keyword match
 _CYPHER_FULLTEXT = """
 CALL db.index.fulltext.queryNodes('node_search', $search_term)
 YIELD node AS center, score
@@ -277,7 +294,7 @@ RETURN
 LIMIT 50
 """
 
-# Fallback when the fulltext index doesn't exist yet
+# 3. Last-resort string match — no index required
 _CYPHER_CONTAINS = """
 UNWIND $entities AS entity_name
 MATCH (center)
@@ -296,6 +313,24 @@ RETURN
     properties(neighbor) AS neighbor_props
 LIMIT 50
 """
+
+
+def _get_query_embedding(question: str) -> list | None:
+    """Call the processor /embed endpoint to get the query vector."""
+    if not _REQUESTS_AVAILABLE:
+        return None
+    try:
+        resp = _requests.post(
+            f"{PROCESSOR_API_URL}/embed",
+            json={"text": question},
+            timeout=10,
+        )
+        if resp.ok:
+            return resp.json()["embedding"]
+        logger.warning("Embed endpoint returned %s: %s", resp.status_code, resp.text)
+    except Exception as e:
+        logger.warning("Could not reach processor /embed: %s", e)
+    return None
 
 
 def _collect_graph_results(results) -> dict:
@@ -328,31 +363,56 @@ def _collect_graph_results(results) -> dict:
     return graph_data
 
 
-def get_graph_context(entities: list[str]) -> dict:
-    if not entities:
-        return {"nodes": {}, "edges": [], "context_text": []}
+def get_graph_context(question: str, entities: list[str]) -> dict:
+    """
+    Retrieve graph context using a three-tier fallback:
+      1. Vector similarity  — embed the full question, find semantically closest nodes
+      2. Fulltext (BM25)    — Lucene match on extracted entity names
+      3. CONTAINS           — simple substring match, no index required
+    """
+    empty = {"nodes": {}, "edges": [], "context_text": []}
 
-    # Try fulltext index first; fall back to CONTAINS if index not yet created
+    # --- Tier 1: vector search ---
+    query_vec = _get_query_embedding(question)
+    if query_vec:
+        try:
+            results = st.session_state.graph.query(_CYPHER_VECTOR, {"query_vec": query_vec})
+            if results:
+                logger.info("Vector search returned %d rows", len(results))
+                return _collect_graph_results(results)
+            logger.info("Vector search returned no results, falling back to fulltext")
+        except Exception as e:
+            if "node_embeddings" in str(e).lower() or "no such" in str(e).lower():
+                logger.warning("Vector index not available yet, falling back to fulltext")
+            else:
+                logger.error("Vector search error: %s", e)
+
+    # --- Tier 2: fulltext index ---
+    if not entities:
+        return empty
     search_term = " OR ".join(entities)
     try:
         results = st.session_state.graph.query(_CYPHER_FULLTEXT, {"search_term": search_term})
-        return _collect_graph_results(results)
-    except Exception as fulltext_err:
-        if "node_search" in str(fulltext_err).lower() or "no such" in str(fulltext_err).lower():
-            logger.warning("Fulltext index not available, falling back to CONTAINS search")
+        if results:
+            logger.info("Fulltext search returned %d rows", len(results))
+            return _collect_graph_results(results)
+        logger.info("Fulltext search returned no results, falling back to CONTAINS")
+    except Exception as e:
+        if "node_search" in str(e).lower() or "no such" in str(e).lower():
+            logger.warning("Fulltext index not available, falling back to CONTAINS")
         else:
-            logger.error("Graph query error: %s", fulltext_err)
-            st.error(f"Graph query error: {fulltext_err}")
-            return {"nodes": {}, "edges": [], "context_text": []}
+            logger.error("Fulltext search error: %s", e)
+            st.error(f"Graph query error: {e}")
+            return empty
 
-    # Fallback
+    # --- Tier 3: CONTAINS fallback ---
     try:
         results = st.session_state.graph.query(_CYPHER_CONTAINS, {"entities": entities})
         return _collect_graph_results(results)
     except Exception as e:
-        logger.error("Fallback graph query error: %s", e)
+        logger.error("CONTAINS fallback error: %s", e)
         st.error(f"Graph query error: {e}")
-        return {"nodes": {}, "edges": [], "context_text": []}
+        return empty
 
 
 def generate_answer(question: str, context_text: list[str]) -> str:
@@ -389,7 +449,7 @@ Frage: {question}"""
 
 # --- 6. Graph visualization ---
 
-def render_graph_viz(data: dict):
+def render_graph_viz(data: dict, key: str = "graph"):
     """Render the knowledge graph subnetwork using streamlit-agraph."""
     if not data or not data["nodes"]:
         return
@@ -417,7 +477,8 @@ def render_graph_viz(data: dict):
         for e in data["edges"]
     ]
     config = Config(width=800, height=450, directed=True, physics=True)
-    return agraph(nodes=nodes, edges=edges, config=config)
+    with st.container(key=key):
+        return agraph(nodes=nodes, edges=edges, config=config)
 
 
 # --- 7. Main UI ---
@@ -443,8 +504,9 @@ for i, message in enumerate(st.session_state.messages):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
         if "graph_data" in message and message["graph_data"]["nodes"]:
-            with st.expander("Explore Graph Context"):
-                render_graph_viz(message["graph_data"])
+            is_latest = i == len(st.session_state.messages) - 1
+            with st.expander("Explore Graph Context", expanded=is_latest):
+                render_graph_viz(message["graph_data"], key=f"graph_{i}")
 
 # New input
 placeholder = (
@@ -465,7 +527,7 @@ if prompt := st.chat_input(placeholder):
             st.write(f"Detected: `{entities}`")
 
             st.write("Searching Knowledge Graph...")
-            graph_data = get_graph_context(entities)
+            graph_data = get_graph_context(prompt, entities)
 
             if not graph_data["nodes"]:
                 st.warning("No matching nodes found in the graph.")
@@ -481,7 +543,7 @@ if prompt := st.chat_input(placeholder):
 
         if graph_data["nodes"]:
             with st.expander("Graph Subnetwork", expanded=True):
-                render_graph_viz(graph_data)
+                render_graph_viz(graph_data, key=f"graph_{len(st.session_state.messages)}")
 
         st.session_state.messages.append({
             "role": "assistant",

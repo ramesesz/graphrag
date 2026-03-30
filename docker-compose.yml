@@ -22,6 +22,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./configs:/app/configs
+      - hf_cache:/root/.cache/huggingface
     command: ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     depends_on:
       - neo4j
@@ -57,3 +58,6 @@ services:
       - ./services/frontend:/app
       - ./configs:/app/configs
       - ./services/processor:/app/processor
+
+volumes:
+  hf_cache:

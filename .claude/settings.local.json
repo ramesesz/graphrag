@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(grep -E \"\\\\.\\(md|txt|cfg|conf|yml|yaml|json\\)$\")"
+      "Bash(grep -E \"\\\\.\\(md|txt|cfg|conf|yml|yaml|json\\)$\")",
+      "Bash(docker exec:*)"
     ]
   }
 }

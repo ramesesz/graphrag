@@ -33,6 +33,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 from pipeline.config_loader import list_domains, load_domain_config
+from pipeline.embedder import LocalEmbedder, ensure_vector_index
+
+# Module-level embedder — loaded once at startup, shared across requests
+_embedder: LocalEmbedder | None = None
 
 APP_DIR = Path("/app") if Path("/app").exists() else Path.cwd()
 DATA_DIR = APP_DIR / "data"
@@ -47,7 +51,10 @@ app = FastAPI(
 
 @app.on_event("startup")
 def create_schema():
-    """Create Neo4j fulltext index and uniqueness constraints on startup."""
+    """Load the embedding model and create Neo4j indexes on startup."""
+    global _embedder
+    _embedder = LocalEmbedder()
+
     graph = _connect_neo4j()
     if graph is None:
         logger.warning("Could not create schema — Neo4j not available at startup")
@@ -66,6 +73,8 @@ def create_schema():
         logger.info("Fulltext index 'node_search' ensured")
     except Exception as e:
         logger.warning("Could not create fulltext index (may already exist): %s", e)
+
+    ensure_vector_index(graph)
 
 # In-memory job registry (replace with Redis for multi-instance deployments)
 jobs: Dict[str, dict] = {}
@@ -93,6 +102,7 @@ def _connect_neo4j():
 def _run_pipeline(job_id: str, domain: str, mode: str) -> None:
     """Background task: run the extraction pipeline for a domain."""
     from main import process_document
+    embedder = _embedder
 
     jobs[job_id]["status"] = "running"
     logger.info("Job %s starting: domain=%s mode=%s", job_id, domain, mode)
@@ -125,7 +135,7 @@ def _run_pipeline(job_id: str, domain: str, mode: str) -> None:
         jobs[job_id]["processed_files"] = 0
 
         for input_file in input_files:
-            process_document(input_file, mode=mode, config=config)
+            process_document(input_file, mode=mode, config=config, embedder=embedder)
             jobs[job_id]["processed_files"] += 1
 
         jobs[job_id]["status"] = "completed"
@@ -142,6 +152,18 @@ def _run_pipeline(job_id: str, domain: str, mode: str) -> None:
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.post("/embed")
+def embed_text(body: dict):
+    """Return the embedding vector for a given text string."""
+    text = body.get("text", "")
+    if not text:
+        raise HTTPException(status_code=400, detail="'text' field is required")
+    if _embedder is None:
+        raise HTTPException(status_code=503, detail="Embedding model not yet loaded")
+    vector = _embedder.embed_query(text)
+    return {"embedding": vector}
 
 
 @app.get("/domains")

@@ -5,86 +5,72 @@
       {
         "id": "Ilea",
         "type": "Person",
-        "properties": {
-          "description": "Returned from the north, involved in Ravenhall's development, fought a demon, trained with Cerithil Hunters, investigated corruption in the Descent."
-        }
+        "properties": {}
       },
       {
         "id": "Ravenhall",
         "type": "Location",
-        "properties": {
-          "description": "Fortress city, experiencing growth due to refugees and merchants."
-        }
+        "properties": {}
       },
       {
         "id": "Lys",
         "type": "Location",
-        "properties": {
-          "description": "Location of ongoing war."
-        }
+        "properties": {}
       },
       {
         "id": "Shadow\u2019S Hand",
         "type": "Organization",
-        "properties": {
-          "description": "Fortress city organization in Ravenhall."
-        }
+        "properties": {}
       },
       {
         "id": "Rhyvor",
         "type": "Location",
-        "properties": {
-          "description": "Source of equipment and gold for Ravenhall."
-        }
+        "properties": {}
       },
       {
         "id": "Claire",
         "type": "Person",
-        "properties": {
-          "description": "Involved in Ravenhall's development with Ilea."
-        }
+        "properties": {}
       },
       {
         "id": "Riverwatch",
         "type": "Location",
-        "properties": {
-          "description": "First settlement Ilea found on Elos, location of demon rematch and investigation."
-        }
+        "properties": {}
       },
       {
         "id": "Elos",
         "type": "Location",
-        "properties": {
-          "description": "World where Riverwatch is located."
-        }
+        "properties": {}
+      },
+      {
+        "id": "Demon",
+        "type": "Monster",
+        "properties": {}
       },
       {
         "id": "Cerithil Hunters",
         "type": "Organization",
-        "properties": {
-          "description": "Group of elves fighting machines in dungeons."
-        }
+        "properties": {}
+      },
+      {
+        "id": "Elves",
+        "type": "Race",
+        "properties": {}
       },
       {
         "id": "Taleen Dwarves",
         "type": "Race",
-        "properties": {
-          "description": "Creators of machines found in dungeons."
-        }
+        "properties": {}
       },
       {
         "id": "Descent",
         "type": "Location",
-        "properties": {
-          "description": "Ancient dungeon with spreading corruption."
-        }
+        "properties": {}
       },
       {
         "id": "Sand Elemental",
         "type": "Monster",
-        "properties": {
-          "description": "Corrupted monster defeated by Ilea and allies on the 20th layer of the Descent."
-        }
+        "properties": {}
       }
     ],
     "relationships": [
@@ -93,42 +79,7 @@
         "target": "Ravenhall",
         "type": "VISITED",
         "properties": {
-          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
-          "source_page": "1"
-        }
-      },
-      {
-        "source": "Ilea",
-        "target": "Riverwatch",
-        "type": "VISITED",
-        "properties": {
-          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
-          "source_page": "1"
-        }
-      },
-      {
-        "source": "Ilea",
-        "target": "Cerithil Hunters",
-        "type": "IS_ALLY",
-        "properties": {
-          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
-          "source_page": "1"
-        }
-      },
-      {
-        "source": "Ilea",
-        "target": "Descent",
-        "type": "VISITED",
-        "properties": {
-          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
-          "source_page": "1"
-        }
-      },
-      {
-        "source": "Ilea",
-        "target": "Sand Elemental",
-        "type": "KILLED",
-        "properties": {
+          "description": "Ilea returned from the north to find Ravenhall on the upswing.",
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "1"
         }
@@ -138,15 +89,67 @@
         "target": "Shadow\u2019S Hand",
         "type": "LOCATED_IN",
         "properties": {
+          "description": "Ravenhall is a fortress city of the Shadow\u2019s Hand.",
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "1"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Riverwatch",
+        "type": "VISITED",
+        "properties": {
+          "description": "Ilea went to check in on Riverwatch.",
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "1"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Demon",
+        "type": "ENCOUNTERED",
+        "properties": {
+          "description": "Ilea had a rematch with a demon she had fought before.",
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "1"
         }
       },
       {
         "source": "Cerithil Hunters",
-        "target": "Taleen Dwarves",
-        "type": "IS_HOSTILE",
+        "target": "Elves",
+        "type": "BELONGS_TO_RACE",
         "properties": {
+          "description": "Cerithil Hunters are elves who had forsaken their domains.",
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "1"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Cerithil Hunters",
+        "type": "ENCOUNTERED",
+        "properties": {
+          "description": "Ilea met and trained with a group of elves that were part of the Cerithil Hunters.",
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "1"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Descent",
+        "type": "VISITED",
+        "properties": {
+          "description": "Ilea was called to help in the north, where a corruption had started spreading amongst the monsters of the Descent.",
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "1"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Sand Elemental",
+        "type": "KILLED",
+        "properties": {
+          "description": "Ilea and her allies battled and defeated the corrupted Sand Elemental.",
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "1"
         }
@@ -169,20 +172,6 @@
         }
       },
       {
-        "id": "Vor Elenthir",
-        "type": "Person",
-        "properties": {
-          "description": "An Ascended who confronted Ilea"
-        }
-      },
-      {
-        "id": "Ascended",
-        "type": "Race",
-        "properties": {
-          "description": "Beings from another realm that had come to Elos"
-        }
-      },
-      {
         "id": "Hallowfort",
         "type": "Location",
         "properties": {}
@@ -193,12 +182,26 @@
         "properties": {}
       },
       {
-        "id": "Ravenhall",
+        "id": "Dungeon",
         "type": "Location",
         "properties": {}
       },
       {
-        "id": "Elos",
+        "id": "Ascended",
+        "type": "Race",
+        "properties": {
+          "description": "Beings from another realm that had come to Elos with an unknown purpose"
+        }
+      },
+      {
+        "id": "Vor Elenthir",
+        "type": "Person",
+        "properties": {
+          "description": "An Ascended who confronted Ilea"
+        }
+      },
+      {
+        "id": "Ravenhall",
         "type": "Location",
         "properties": {}
       }
@@ -206,14 +209,17 @@
     "relationships": [
       {
         "source": "Ilea",
-        "target": "Violence",
-        "type": "IS_ALLY",
-        "properties": {}
+        "target": "Dungeon",
+        "type": "VISITED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "2"
+        }
       },
       {
         "source": "Ilea",
-        "target": "Vor Elenthir",
-        "type": "ENCOUNTERED",
+        "target": "Violence",
+        "type": "IS_ALLY",
         "properties": {
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "2"
@@ -222,20 +228,31 @@
       {
         "source": "Ilea",
         "target": "Vor Elenthir",
-        "type": "IS_HOSTILE",
-        "properties": {}
+        "type": "ENCOUNTERED",
+        "properties": {
+          "description": "Vor Elenthir nearly killed Ilea in the battle",
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "2"
+        }
       },
       {
         "source": "Ilea",
         "target": "Ravenhall",
         "type": "VISITED",
-        "properties": {}
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "2"
+        }
       },
       {
         "source": "Ascended",
-        "target": "Elos",
+        "target": "Dungeon",
         "type": "LOCATED_IN",
-        "properties": {}
+        "properties": {
+          "description": "The ancient facilities within the dungeon had once belonged to the Ascended",
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "2"
+        }
       }
     ]
   },
@@ -245,37 +262,32 @@
       {
         "id": "Ilea",
         "type": "Person",
-        "properties": {
-          "description": "Leaning against the windowsill in Claire's office, sipping ale, contemplating training resistances."
-        }
+        "properties": {}
       },
       {
         "id": "Claire'S Office",
         "type": "Location",
-        "properties": {
-          "description": "Office with a view of a busy square, located in Ravenhall."
-        }
+        "properties": {}
       },
       {
         "id": "Ravenhall",
         "type": "Location",
-        "properties": {
-          "description": "A place where Ilea feels at home, with a busy square and nearby snow-topped mountains."
-        }
-      },
-      {
-        "id": "Avatar Of Ash",
-        "type": "Skill",
-        "properties": {
-          "description": "An upgraded skill that allows Ilea to deactivate her resistances for training."
-        }
+        "properties": {}
       },
       {
         "id": "Riverwatch",
         "type": "Location",
-        "properties": {
-          "description": "A place that gave Ilea a strange but exciting sensation upon first visit."
-        }
+        "properties": {}
+      },
+      {
+        "id": "Avatar Of Ash",
+        "type": "Skill",
+        "properties": {}
+      },
+      {
+        "id": "Violence",
+        "type": "Person",
+        "properties": {}
       }
     ],
     "relationships": [
@@ -299,6 +311,15 @@
       },
       {
         "source": "Ilea",
+        "target": "Riverwatch",
+        "type": "VISITED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "3"
+        }
+      },
+      {
+        "source": "Ilea",
         "target": "Avatar Of Ash",
         "type": "HAS_SKILL",
         "properties": {
@@ -308,8 +329,8 @@
       },
       {
         "source": "Ilea",
-        "target": "Riverwatch",
-        "type": "VISITED",
+        "target": "Violence",
+        "type": "IS_ALLY",
         "properties": {
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "3"
@@ -321,12 +342,12 @@
     "source_text_chunk": "--- Page 5 ---\nwith medieval weapons to hunt for and defend against monsters.\nA lot had happened since then.\nShe was taken out of her contemplations when she heard and saw a\nmetal tube arrive in a contraption set into the wall behind Claire\u2019s desk.\nClaire took the tube and opened it. She unwrapped a small piece of\npaper and then made it vanish. She noticed Ilea\u2019s questioning stare. \u201cThis?\nA new addition. Turns out two brilliant young enchanters equipped with the\nresources of Lilith can create some interesting prototypes. I heard about\nAki\u2019s new body too. Though I don\u2019t think that was their doing entirely.\nTrian should arrive shortly.\u201d\n\u201cA long-distance messaging device?\u201d Ilea asked.\n\u201cJust within the city for now, but we\u2019re thinking about broader\napplications.\u201d\nIlea looked at the device and then moved her attention back to the\nsquare. Seems like Iana and Christopher haven\u2019t been idle.\nTrian arrived a few minutes later. He burst into the room and glared at\nIlea, then smiled. \u201cYou\u2019re alive.\u201d\n\u201cWhy wouldn\u2019t I be?\u201d\nHe stomped toward her. \u201cAll of those paintings. And then Cless couldn\u2019t\npaint you anymore. What on Elos were you doing? We thought you were on\na mission to Riverwatch!\u201d\nIlea summoned the sphere that Catelyn had given her, throwing it up\nand then catching it in a playful manner. \u201cIt\u2019s kind of a long story.\u201d\nShe told them about her adventures. About her time in Riverwatch, her\ncall to the north, her adventures in the Descent, and finally, her encounter\nwith the Ascended and the visit to the Fae.\nAfter the initial shock and stunned expressions, Claire and Trian\nsuggested they take a walk to better digest everything she had told them.\nIlea stopped at a street food vendor nearby and got all of them a few\nmeat skewers.\n\u201cIt\u2019s a lot to take in,\u201d Trian said, biting into his skewer. \u201cA sun? Really?\nThey took it? And one of them is still alive? Ascended, you said.\u201d\nIlea started eating too. \u201cYeah, I agree it sounds ridiculous. But you\n\n[Source: Azarinth_Healer_Book_5-9-794.pdf | Page: 5]",
     "nodes": [
       {
-        "id": "Ilea",
+        "id": "Claire",
         "type": "Person",
         "properties": {}
       },
       {
-        "id": "Claire",
+        "id": "Ilea",
         "type": "Person",
         "properties": {}
       },
@@ -346,6 +367,11 @@
         "properties": {}
       },
       {
+        "id": "Lilith",
+        "type": "Organization",
+        "properties": {}
+      },
+      {
         "id": "Aki",
         "type": "Person",
         "properties": {}
@@ -361,11 +387,6 @@
         "properties": {}
       },
       {
-        "id": "Lilith",
-        "type": "Organization",
-        "properties": {}
-      },
-      {
         "id": "Riverwatch",
         "type": "Location",
         "properties": {}
@@ -377,12 +398,12 @@
       },
       {
         "id": "Ascended",
-        "type": "Organization",
+        "type": "Person",
         "properties": {}
       },
       {
         "id": "Fae",
-        "type": "Organization",
+        "type": "Person",
         "properties": {}
       }
     ],
@@ -390,47 +411,38 @@
       {
         "source": "Claire",
         "target": "Lilith",
-        "type": "HAS_ALIAS",
-        "properties": {
-          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
-          "source_page": "5"
-        }
+        "type": "BELONGS_TO_RACE",
+        "properties": {}
       },
       {
         "source": "Ilea",
         "target": "Riverwatch",
         "type": "VISITED",
-        "properties": {
-          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
-          "source_page": "5"
-        }
+        "properties": {}
       },
       {
         "source": "Ilea",
         "target": "Descent",
         "type": "VISITED",
-        "properties": {
-          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
-          "source_page": "5"
-        }
+        "properties": {}
       },
       {
         "source": "Ilea",
         "target": "Ascended",
         "type": "ENCOUNTERED",
-        "properties": {
-          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
-          "source_page": "5"
-        }
+        "properties": {}
       },
       {
         "source": "Ilea",
         "target": "Fae",
         "type": "VISITED",
-        "properties": {
-          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
-          "source_page": "5"
-        }
+        "properties": {}
+      },
+      {
+        "source": "Iana",
+        "target": "Christopher",
+        "type": "IS_ALLY",
+        "properties": {}
       }
     ]
   },
@@ -453,7 +465,17 @@
         "properties": {}
       },
       {
+        "id": "Second Wall",
+        "type": "Location",
+        "properties": {}
+      },
+      {
         "id": "City",
+        "type": "Location",
+        "properties": {}
+      },
+      {
+        "id": "Building Overgrown With Ivy",
         "type": "Location",
         "properties": {}
       }
@@ -462,15 +484,33 @@
       {
         "source": "Ilea",
         "target": "Superfae",
-        "type": "HAS_ALIAS",
+        "type": "IS_ALLY",
         "properties": {
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "5"
         }
       },
       {
-        "source": "City",
+        "source": "Ilea",
         "target": "Fae",
+        "type": "ENCOUNTERED",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "5"
+        }
+      },
+      {
+        "source": "Second Wall",
+        "target": "City",
+        "type": "LOCATED_IN",
+        "properties": {
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "5"
+        }
+      },
+      {
+        "source": "Building Overgrown With Ivy",
+        "target": "Second Wall",
         "type": "LOCATED_IN",
         "properties": {
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
@@ -508,40 +548,62 @@
         "properties": {}
       },
       {
-        "id": "Healing Class",
+        "id": "Shadow",
         "type": "Class",
         "properties": {}
       },
       {
-        "id": "Shadow",
+        "id": "Healing",
         "type": "Class",
+        "properties": {}
+      },
+      {
+        "id": "Roof",
+        "type": "Location",
+        "properties": {}
+      },
+      {
+        "id": "Birds",
+        "type": "Monster",
         "properties": {}
       }
     ],
     "relationships": [
       {
-        "source": "Ilea",
-        "target": "Healing Class",
-        "type": "HAS_CLASS",
+        "source": "Claire",
+        "target": "Roof",
+        "type": "VISITED",
         "properties": {
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "6"
         }
       },
       {
-        "source": "Claire",
+        "source": "Trian",
         "target": "Shadow",
         "type": "HAS_CLASS",
         "properties": {
+          "description": "A Shadow from Trian's team was mentioned.",
+          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
+          "source_page": "6"
+        }
+      },
+      {
+        "source": "Ilea",
+        "target": "Healing",
+        "type": "HAS_CLASS",
+        "properties": {
+          "description": "Ilea has a healing Class.",
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "6"
         }
       },
       {
         "source": "Kyrian",
-        "target": "Cless",
-        "type": "IS_ALLY",
+        "target": "Birds",
+        "type": "ENCOUNTERED",
         "properties": {
+          "description": "Kyrian has some birds with him.",
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "6"
         }
@@ -570,6 +632,11 @@
         "id": "Ravenhall",
         "type": "Location",
         "properties": {}
+      },
+      {
+        "id": "Demon Summoning",
+        "type": "Monster",
+        "properties": {}
       }
     ],
     "relationships": [
@@ -578,6 +645,7 @@
         "target": "Shadowguard",
         "type": "ENCOUNTERED",
         "properties": {
+          "description": "argument with the Shadowguard",
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "6"
         }
@@ -587,15 +655,17 @@
         "target": "Merchant",
         "type": "IS_ALLY",
         "properties": {
+          "description": "wanted to help the merchant",
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "6"
         }
       },
       {
-        "source": "Ravenhall",
-        "target": "Shadowguard",
-        "type": "LOCATED_IN",
+        "source": "Demon Summoning",
+        "target": "Ravenhall",
+        "type": "IS_HOSTILE",
         "properties": {
+          "description": "devastated Ravenhall and its population less than two years prior",
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "6"
         }
@@ -618,17 +688,10 @@
       {
         "id": "Ilea",
         "type": "Person",
-        "properties": {
-          "level": "300"
-        }
-      },
-      {
-        "id": "Demon Summoning",
-        "type": "Skill",
         "properties": {}
       },
       {
-        "id": "Blood Corruption",
+        "id": "Demon Summoning",
         "type": "Skill",
         "properties": {}
       },
@@ -655,15 +718,6 @@
       },
       {
         "source": "Claire",
-        "target": "Blood Corruption",
-        "type": "ENCOUNTERED",
-        "properties": {
-          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
-          "source_page": "7"
-        }
-      },
-      {
-        "source": "Claire",
         "target": "Elementals",
         "type": "ENCOUNTERED",
         "properties": {
@@ -679,15 +733,6 @@
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "7"
         }
-      },
-      {
-        "source": "Ilea",
-        "target": "Ancient Realm-Traveling Civilizations",
-        "type": "ENCOUNTERED",
-        "properties": {
-          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
-          "source_page": "7"
-        }
       }
     ]
   },
@@ -697,38 +742,31 @@
       {
         "id": "Nathan",
         "type": "Person",
-        "properties": {
-          "description": "Joined the Sentinels three weeks ago after events in Veraan."
-        }
+        "properties": {}
       },
       {
         "id": "Sentinels",
         "type": "Organization",
-        "properties": {
-          "description": "An organization offering power and training, including combat, strategy, and healing."
-        }
+        "properties": {}
       },
       {
         "id": "Veraan",
         "type": "Location",
-        "properties": {
-          "description": "A place associated with past events involving Nathan."
-        }
+        "properties": {}
       },
       {
         "id": "Lilith",
         "type": "Person",
-        "properties": {
-          "description": "Owner of several shops and has a reputation in the city."
-        }
+        "properties": {}
       }
     ],
     "relationships": [
       {
         "source": "Nathan",
         "target": "Sentinels",
-        "type": "HAS_CLASS",
+        "type": "BELONGS_TO_RACE",
         "properties": {
+          "description": "Nathan joined the Sentinels three weeks prior.",
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "8"
         }
@@ -738,6 +776,7 @@
         "target": "Veraan",
         "type": "VISITED",
         "properties": {
+          "description": "Nathan had experiences in Veraan.",
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "8"
         }
@@ -745,8 +784,9 @@
       {
         "source": "Nathan",
         "target": "Lilith",
-        "type": "HAS_ALIAS",
+        "type": "IS_ALLY",
         "properties": {
+          "description": "Nathan had previous employment at shops owned by Lilith.",
           "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
           "source_page": "8"
         }
@@ -775,11 +815,6 @@
         "properties": {}
       },
       {
-        "id": "Sentinels",
-        "type": "Organization",
-        "properties": {}
-      },
-      {
         "id": "Main Hall",
         "type": "Location",
         "properties": {
@@ -787,8 +822,8 @@
         }
       },
       {
-        "id": "Lowest Training Hall",
-        "type": "Location",
+        "id": "Sentinels",
+        "type": "Organization",
         "properties": {}
       }
     ],
@@ -797,27 +832,32 @@
         "source": "Nathan",
         "target": "Luke",
         "type": "IS_ALLY",
-        "properties": {
-          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
-          "source_page": "10"
-        }
+        "properties": {}
       },
       {
-        "source": "Sentinels",
+        "source": "Main Hall",
+        "target": "Sentinels",
+        "type": "LOCATED_IN",
+        "properties": {}
+      },
+      {
+        "source": "Main Hall",
+        "target": "Nathan",
+        "type": "VISITED",
+        "properties": {}
+      },
+      {
+        "source": "Main Hall",
+        "target": "Luke",
+        "type": "VISITED",
+        "properties": {}
+      },
+      {
+        "source": "Lilith",
         "target": "Main Hall",
         "type": "LOCATED_IN",
         "properties": {
-          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
-          "source_page": "10"
-        }
-      },
-      {
-        "source": "Sentinels",
-        "target": "Lilith",
-        "type": "IS_ALLY",
-        "properties": {
-          "source_document": "Azarinth_Healer_Book_5-9-794.pdf",
-          "source_page": "10"
+          "description": "Funded by Lilith."
         }
       }
     ]

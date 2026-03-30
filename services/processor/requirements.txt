@@ -1,4 +1,5 @@
 pypdf==6.6.2
+sentence-transformers
 beautifulsoup4
 langchain==1.2.7
 langchain-community==0.4.1
