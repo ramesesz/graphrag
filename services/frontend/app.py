@@ -133,98 +133,243 @@ def get_node_colors() -> dict:
     return DEFAULT_NODE_COLORS
 
 
-# --- 4. Domain selector sidebar ---
+# --- 4. Document browser sidebar ---
 
-def render_processor_panel():
-    """Sidebar panel for uploading PDFs and triggering processing."""
-    if not _REQUESTS_AVAILABLE:
+def _set_active_domain(domain: str) -> None:
+    """Switch active domain and clear chat history."""
+    if domain == st.session_state.active_domain:
+        return
+    st.session_state.active_domain = domain
+    try:
+        st.session_state.domain_config = load_domain_config(domain)
+    except Exception:
+        st.session_state.domain_config = None
+    st.session_state.messages = []
+
+
+def _start_extraction(domain: str, mode: str, files_filter: list[str] | None = None) -> None:
+    """POST /process, store job in session state, and toast the result."""
+    params = {"domain": domain, "mode": mode}
+    if files_filter:
+        params["files"] = files_filter
+    try:
+        resp = _requests.post(
+            f"{PROCESSOR_API_URL}/process",
+            params=params,
+            timeout=10,
+        )
+        if resp.ok:
+            job = resp.json()
+            if "recent_jobs" not in st.session_state:
+                st.session_state.recent_jobs = []
+            st.session_state.recent_jobs.append({
+                "job_id": job["job_id"],
+                "domain": domain,
+                "mode": mode,
+                "status": "queued",
+            })
+            st.toast(f"Job started: {job['job_id'][:8]}...", icon="▶")
+        else:
+            st.error(f"Failed to start job: {resp.text}")
+    except Exception as e:
+        st.error(f"Could not reach processor API: {e}")
+
+
+def render_jobs_panel() -> None:
+    """Sidebar panel showing recent job statuses with a refresh button."""
+    if "recent_jobs" not in st.session_state or not st.session_state.recent_jobs:
         return
 
     st.sidebar.divider()
-    st.sidebar.subheader("Process Documents")
+    st.sidebar.subheader("Jobs")
 
-    domain = st.session_state.get("active_domain")
-    if not domain:
-        st.sidebar.caption("Select a domain first.")
+    updated = []
+    for job in st.session_state.recent_jobs:
+        try:
+            r = _requests.get(f"{PROCESSOR_API_URL}/jobs/{job['job_id']}", timeout=5)
+            if r.ok:
+                job = {**job, **r.json()}
+        except Exception:
+            pass
+
+        status = job.get("status", "?")
+        icon = {"queued": "⏳", "running": "🔄", "completed": "✅", "failed": "❌"}.get(status, "❓")
+        total = job.get("total_files")
+        done = job.get("processed_files")
+        progress = f" ({done}/{total} files)" if total else ""
+        st.sidebar.markdown(
+            f"{icon} **{job['domain']}** — `{status}`{progress}  \n"
+            f"<small>`{job['job_id'][:8]}...` · {job['mode']}</small>",
+            unsafe_allow_html=True,
+        )
+        if job.get("error"):
+            st.sidebar.caption(f"Error: {job['error']}")
+
+        # Keep only non-completed jobs + last 3 completed/failed
+        if status not in ("completed", "failed"):
+            updated.append(job)
+        else:
+            updated.append(job)
+
+    # Trim: keep all running/queued + last 3 terminal ones
+    running = [j for j in updated if j.get("status") not in ("completed", "failed")]
+    terminal = [j for j in updated if j.get("status") in ("completed", "failed")][-3:]
+    st.session_state.recent_jobs = running + terminal
+
+    col1, col2 = st.sidebar.columns(2)
+    with col1:
+        if st.button("Refresh", key="jobs_refresh"):
+            st.rerun()
+    with col2:
+        if st.button("Clear", key="jobs_clear"):
+            st.session_state.recent_jobs = []
+            st.rerun()
+
+
+def render_document_browser():
+    """Sidebar document browser: domains as expanders, files with extraction badges."""
+    st.sidebar.title("Knowledge Domains")
+
+    if not _REQUESTS_AVAILABLE or not _CONFIG_LOADER_AVAILABLE:
+        st.sidebar.warning("Processor API or config loader not available.")
         return
 
-    uploaded_file = st.sidebar.file_uploader(
-        "Upload PDF", type=["pdf"], key="pdf_uploader"
-    )
-    if uploaded_file and st.sidebar.button("Upload to graph"):
-        try:
-            resp = _requests.post(
-                f"{PROCESSOR_API_URL}/upload/{domain}",
-                files={"file": (uploaded_file.name, uploaded_file.getvalue(), "application/pdf")},
-                timeout=30,
-            )
-            if resp.ok:
-                st.sidebar.success(f"Uploaded: {uploaded_file.name}")
-            else:
-                st.sidebar.error(f"Upload failed: {resp.text}")
-        except Exception as e:
-            st.sidebar.error(f"Upload error: {e}")
+    # Fetch document state from processor API
+    try:
+        resp = _requests.get(f"{PROCESSOR_API_URL}/documents", timeout=5)
+        doc_state = resp.json() if resp.ok else {}
+    except Exception:
+        doc_state = {}
 
-    mode = st.sidebar.selectbox(
-        "Extraction mode",
-        ["full", "chunks", "graph"],
-        help="full=PDF→graph, chunks=PDF only, graph=chunks→graph",
-        key="extraction_mode",
-    )
-    if st.sidebar.button("▶ Start extraction", type="primary"):
-        try:
-            resp = _requests.post(
-                f"{PROCESSOR_API_URL}/process",
-                params={"domain": domain, "mode": mode},
-                timeout=10,
-            )
-            if resp.ok:
-                job = resp.json()
-                st.sidebar.success(f"Job started: `{job['job_id'][:8]}...`")
-            else:
-                st.sidebar.error(f"Failed to start job: {resp.text}")
-        except Exception as e:
-            st.sidebar.error(f"Could not reach processor API: {e}")
-
-
-def render_domain_selector():
-    st.sidebar.title("Knowledge Domain")
-
-    if not _CONFIG_LOADER_AVAILABLE:
-        st.sidebar.warning("Domain configs not available.")
-        return
-
+    # Fall back to just listing domains without file state
     domains = list_domains()
     if not domains:
         st.sidebar.warning("No domain configs found in configs/domains/.")
         return
 
-    # Build display names
-    domain_labels = {}
-    for d in domains:
-        try:
-            cfg = load_domain_config(d)
-            domain_labels[d] = cfg.display_name
-        except Exception:
-            domain_labels[d] = d
+    # Auto-select first domain if none active
+    if not st.session_state.active_domain and domains:
+        _set_active_domain(domains[0])
 
-    selected = st.sidebar.selectbox(
-        "Select domain",
-        options=domains,
-        format_func=lambda x: domain_labels.get(x, x),
-        key="domain_selector_widget",
-    )
+    # Pending extraction confirmation stored in session state
+    if "pending_extraction" not in st.session_state:
+        st.session_state.pending_extraction = None
 
-    if selected != st.session_state.active_domain:
-        st.session_state.active_domain = selected
-        try:
-            st.session_state.domain_config = load_domain_config(selected)
-        except Exception as e:
-            st.sidebar.error(f"Failed to load domain config: {e}")
-            st.session_state.domain_config = None
-        # Clear chat history when switching domains
-        st.session_state.messages = []
-        st.rerun()
+    for domain in domains:
+        domain_info = doc_state.get(domain, {})
+        display_name = domain_info.get("display_name", domain)
+        files = domain_info.get("files", [])
+
+        is_active = st.session_state.active_domain == domain
+
+        with st.sidebar.expander(display_name, expanded=is_active):
+            # Switch active domain when expander is opened
+            if not is_active:
+                if st.button("Switch to this domain", key=f"switch_{domain}"):
+                    _set_active_domain(domain)
+                    st.rerun()
+
+            # File list with checkboxes and 4-state status badges
+            selected_files = []
+            if files:
+                st.caption("Select files to extract:")
+                for f in files:
+                    if f.get("has_neo4j"):
+                        badge, status = "🟢", "in Neo4j"
+                    elif f.get("has_graph"):
+                        badge, status = "🟠", "graph JSON only"
+                    elif f.get("has_chunks"):
+                        badge, status = "🟡", "chunks only"
+                    else:
+                        badge, status = "🔴", "not extracted"
+                    checked = st.checkbox(
+                        f"{badge} `{f['name']}` — *{status}*",
+                        key=f"chk_{domain}_{f['name']}",
+                    )
+                    if checked:
+                        selected_files.append(f["name"])
+            else:
+                st.caption("No documents yet.")
+
+            st.divider()
+
+            # Upload
+            uploaded_files = st.file_uploader(
+                "Upload documents",
+                type=["pdf", "html"],
+                accept_multiple_files=True,
+                key=f"uploader_{domain}",
+            )
+            if uploaded_files and st.button("Upload", key=f"upload_btn_{domain}"):
+                for uf in uploaded_files:
+                    mime = "application/pdf" if uf.name.lower().endswith(".pdf") else "text/html"
+                    try:
+                        r = _requests.post(
+                            f"{PROCESSOR_API_URL}/upload/{domain}",
+                            files={"file": (uf.name, uf.getvalue(), mime)},
+                            timeout=30,
+                        )
+                        if r.ok:
+                            st.success(f"Uploaded {uf.name}")
+                        else:
+                            st.error(f"Upload failed: {r.text}")
+                    except Exception as e:
+                        st.error(f"Upload error: {e}")
+                st.rerun()
+
+            # Extraction mode + trigger
+            mode = st.selectbox(
+                "Extraction mode",
+                ["full", "chunks", "extract", "neo4j"],
+                help=(
+                    "full = file→chunks→LLM→graph JSON→Neo4j  |  "
+                    "chunks = file→chunks JSON only  |  "
+                    "extract = chunks JSON→LLM→graph JSON (no Neo4j)  |  "
+                    "neo4j = graph JSON→Neo4j only"
+                ),
+                key=f"mode_{domain}",
+            )
+
+            btn_label = f"▶ Run on {len(selected_files)} selected" if selected_files else "▶ Extract all"
+            if st.button(btn_label, type="primary", key=f"extract_{domain}"):
+                target_files = selected_files if selected_files else None
+                already_done = [f["name"] for f in files if f.get("has_neo4j")]
+                unextracted = [
+                    name for name in (target_files or [f["name"] for f in files])
+                    if not next((f for f in files if f["name"] == name), {}).get("has_neo4j")
+                ]
+
+                if not selected_files and already_done and unextracted:
+                    # Full-domain extract with existing Neo4j data — ask for confirmation
+                    st.session_state.pending_extraction = {
+                        "domain": domain,
+                        "mode": mode,
+                        "unextracted": unextracted,
+                        "already_done": already_done,
+                    }
+                    st.rerun()
+                else:
+                    _start_extraction(domain, mode, target_files)
+
+            # Confirmation dialog for diff case (all-domain extract only)
+            pending = st.session_state.pending_extraction
+            if pending and pending["domain"] == domain:
+                st.warning(
+                    f"**{len(pending['already_done'])} file(s) already in Neo4j.**\n\n"
+                    f"Unextracted file(s):\n"
+                    + "\n".join(f"- `{n}`" for n in pending["unextracted"])
+                )
+                col1, col2 = st.columns(2)
+                with col1:
+                    if st.button("New only", key=f"new_only_{domain}"):
+                        _start_extraction(domain, pending["mode"], pending["unextracted"])
+                        st.session_state.pending_extraction = None
+                        st.rerun()
+                with col2:
+                    if st.button("Extract all", key=f"all_{domain}"):
+                        _start_extraction(domain, pending["mode"])
+                        st.session_state.pending_extraction = None
+                        st.rerun()
 
 
 # --- 5. Logic functions ---
@@ -483,8 +628,8 @@ def render_graph_viz(data: dict, key: str = "graph"):
 
 # --- 7. Main UI ---
 
-render_domain_selector()
-render_processor_panel()
+render_document_browser()
+render_jobs_panel()
 
 domain_cfg: DomainConfig | None = st.session_state.get("domain_config")
 title = domain_cfg.display_name if domain_cfg else "GraphRAG Knowledge Chat"

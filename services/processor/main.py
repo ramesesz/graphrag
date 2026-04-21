@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.graphs.graph_document import GraphDocument as LCGraphDocument, Node as LCNode, Relationship as LCRelationship
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_neo4j import Neo4jGraph
@@ -138,6 +139,36 @@ def load_chunks_from_json(filename: str):
     return chunks
 
 
+def load_graph_from_json(filename: str) -> list:
+    """Reconstruct GraphDocument objects from a saved graph JSON file."""
+    path = OUTPUT_DIR / filename
+    if not path.exists():
+        raise FileNotFoundError(f"Graph file not found: {path}")
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    graph_docs = []
+    for item in data:
+        nodes = [
+            LCNode(id=n["id"], type=n["type"], properties=n.get("properties", {}))
+            for n in item.get("nodes", [])
+        ]
+        node_map = {n.id: n for n in nodes}
+        rels = []
+        for r in item.get("relationships", []):
+            source = node_map.get(r["source"]) or LCNode(id=r["source"], type="Unknown")
+            target = node_map.get(r["target"]) or LCNode(id=r["target"], type="Unknown")
+            rels.append(LCRelationship(
+                source=source, target=target,
+                type=r["type"], properties=r.get("properties", {}),
+            ))
+        source_doc = Document(page_content=item.get("source_text_chunk", ""))
+        graph_docs.append(LCGraphDocument(nodes=nodes, relationships=rels, source=source_doc))
+
+    logger.info("Loaded %d graph documents from %s", len(graph_docs), filename)
+    return graph_docs
+
+
 def _load_file(file_path: str) -> Document:
     """Load a PDF or HTML file and return a single merged Document."""
     ext = Path(file_path).suffix.lower()
@@ -215,24 +246,51 @@ def process_document(file_path: str, mode: str, config: DomainConfig, embedder=N
     Process a document based on the specified mode.
 
     Modes:
-    - "full":   file → chunks → graph extraction → JSON → Neo4j
-    - "chunks": file → chunks JSON only (fast, for testing/reviewing)
-    - "graph":  Load existing chunks JSON → graph extraction → JSON → Neo4j
+    - "chunks":  file → chunks JSON only (no LLM cost)
+    - "extract": chunks JSON → LLM graph extraction → graph JSON (no Neo4j)
+    - "neo4j":   graph JSON → Neo4j + .done marker (no LLM cost)
+    - "full":    file → chunks → LLM extraction → graph JSON → Neo4j (all steps)
     """
     base_filename = Path(file_path).stem
     chunks_filename = f"{base_filename}_chunks.json"
+    json_filename = f"{base_filename}_graph.json"
+    neo4j_marker = OUTPUT_DIR / f"{base_filename}_neo4j.done"
 
-    if mode == "graph":
-        logger.info("Processing graph extraction from chunks: %s", base_filename)
+    # --- neo4j mode: load existing graph JSON directly into Neo4j ---
+    if mode == "neo4j":
+        logger.info("Loading graph JSON to Neo4j: %s", base_filename)
+        try:
+            graph_docs = load_graph_from_json(json_filename)
+        except FileNotFoundError as e:
+            logger.error("%s", e)
+            logger.warning("Run 'extract' or 'full' mode first to generate %s", json_filename)
+            return
+        if graph is None:
+            logger.error("No Neo4j connection available for 'neo4j' mode")
+            return
+        if embedder is None:
+            embedder = LocalEmbedder()
+        batch_size = config.llm.batch_size
+        for batch_start in range(0, len(graph_docs), batch_size):
+            batch = graph_docs[batch_start: batch_start + batch_size]
+            graph.add_graph_documents(batch)
+            embed_graph_documents(graph, batch, embedder)
+        neo4j_marker.touch()
+        logger.info("Neo4j marker written: %s", neo4j_marker.name)
+        return
+
+    # --- extract mode: chunks JSON → LLM → graph JSON (skip Neo4j) ---
+    if mode == "extract":
+        logger.info("LLM extraction from chunks: %s", base_filename)
         try:
             chunks = load_chunks_from_json(chunks_filename)
         except FileNotFoundError as e:
             logger.error("%s", e)
-            logger.warning("Please run in 'chunks' or 'full' mode first to generate %s", chunks_filename)
+            logger.warning("Run 'chunks' or 'full' mode first to generate %s", chunks_filename)
             return
     else:
+        # chunks or full: load file, split, save chunks JSON
         logger.info("Processing: %s", os.path.basename(file_path))
-
         is_pdf = Path(file_path).suffix.lower() == ".pdf"
         single_doc = _load_file(file_path)
 
@@ -248,23 +306,22 @@ def process_document(file_path: str, mode: str, config: DomainConfig, embedder=N
         )
         chunks = text_splitter.split_documents([single_doc])
         _add_chunk_metadata(chunks, file_path, is_pdf)
-
         logger.info("Split into %d chunks.", len(chunks))
         save_chunks_to_json(chunks, chunks_filename)
 
         if mode == "chunks":
             return
 
-    # Build transformer from domain config (loaded fresh per document to use correct schema)
+    # --- extract + full: run LLM transformer ---
     llm_transformer = build_transformer(config)
     if embedder is None and graph:
         embedder = LocalEmbedder()
 
+    load_to_neo4j = (mode == "full") and (graph is not None)
     batch_size = config.llm.batch_size
     total_chunks = len(chunks)
     logger.info("Extracting graph from %d chunks in batches of %d...", total_chunks, batch_size)
 
-    json_filename = f"{base_filename}_graph.json"
     all_graph_documents = []
     for batch_start in range(0, total_chunks, batch_size):
         batch = chunks[batch_start: batch_start + batch_size]
@@ -273,12 +330,16 @@ def process_document(file_path: str, mode: str, config: DomainConfig, embedder=N
         batch_docs = _convert_with_retry(llm_transformer, batch)
         all_graph_documents.extend(batch_docs)
 
-        if graph:
+        if load_to_neo4j:
             graph.add_graph_documents(batch_docs)
             embed_graph_documents(graph, batch_docs, embedder)
 
         # Save incrementally so progress survives a later failure
         save_graph_to_json(all_graph_documents, json_filename)
+
+    if load_to_neo4j:
+        neo4j_marker.touch()
+        logger.info("Neo4j marker written: %s", neo4j_marker.name)
 
 
 def main():
@@ -289,9 +350,10 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f"""
 Modes:
-  full    - Complete pipeline: PDF -> chunks JSON -> graph extraction -> JSON -> Neo4j (default)
-  chunks  - Extract text chunks only: PDF -> chunks JSON (fast, no LLM cost)
-  graph   - Extract graph from saved chunks: chunks JSON -> graph extraction -> JSON -> Neo4j
+  full    - Complete pipeline: file -> chunks -> LLM extraction -> graph JSON -> Neo4j (default)
+  chunks  - Chunking only: file -> chunks JSON (no LLM cost)
+  extract - LLM extraction only: chunks JSON -> graph JSON (no Neo4j)
+  neo4j   - Load to Neo4j only: graph JSON -> Neo4j (no LLM cost)
 
 Available domains: {available_domains}
 
@@ -309,7 +371,7 @@ Examples:
     )
     parser.add_argument(
         "--mode",
-        choices=["full", "chunks", "graph"],
+        choices=["full", "chunks", "extract", "neo4j"],
         default="full",
         help="Processing mode (default: full)",
     )
@@ -318,7 +380,7 @@ Examples:
     config = load_domain_config(args.domain)
     logger.info("Domain: %s | Mode: %s", config.display_name, args.mode)
 
-    if args.mode in ["full", "graph"] and not graph:
+    if args.mode in ["full", "neo4j"] and not graph:
         logger.error("Could not connect to Neo4j. Cannot run in 'full' or 'graph' mode.")
         return
 

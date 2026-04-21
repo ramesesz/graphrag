@@ -11,6 +11,7 @@ Endpoints:
   GET  /jobs                     List all jobs
   DELETE /graph/{domain}         Clear all graph data for a domain from Neo4j
   GET  /domains                  List available domain configs
+  GET  /documents                List all domains with files and extraction state
   GET  /health                   Health check
 """
 import logging
@@ -21,7 +22,7 @@ from pathlib import Path
 from typing import Dict, Literal
 
 from dotenv import load_dotenv
-from fastapi import BackgroundTasks, FastAPI, File, HTTPException, UploadFile
+from fastapi import BackgroundTasks, FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.responses import JSONResponse
 
 load_dotenv()
@@ -99,19 +100,19 @@ def _connect_neo4j():
                 return None
 
 
-def _run_pipeline(job_id: str, domain: str, mode: str) -> None:
+def _run_pipeline(job_id: str, domain: str, mode: str, files_filter: list[str] | None = None) -> None:
     """Background task: run the extraction pipeline for a domain."""
     from main import process_document
     embedder = _embedder
 
     jobs[job_id]["status"] = "running"
-    logger.info("Job %s starting: domain=%s mode=%s", job_id, domain, mode)
+    logger.info("Job %s starting: domain=%s mode=%s files=%s", job_id, domain, mode, files_filter)
 
     try:
         config = load_domain_config(domain)
 
         graph = None
-        if mode in ("full", "graph"):
+        if mode in ("full", "neo4j"):
             graph = _connect_neo4j()
             if graph is None:
                 jobs[job_id]["status"] = "failed"
@@ -125,6 +126,9 @@ def _run_pipeline(job_id: str, domain: str, mode: str) -> None:
             glob.glob(str(search_dir / "*.pdf")) +
             glob.glob(str(search_dir / "*.html"))
         )
+
+        if files_filter:
+            input_files = [f for f in input_files if Path(f).name in files_filter]
 
         if not input_files:
             jobs[job_id]["status"] = "completed"
@@ -180,13 +184,48 @@ def get_domains():
     return result
 
 
+@app.get("/documents")
+def list_documents():
+    """Return all domains with their files and per-file extraction state."""
+    CHUNKS_DIR = DATA_DIR / "output_chunks"
+    GRAPH_DIR = DATA_DIR / "output_json"
+    result = {}
+    for domain in list_domains():
+        try:
+            cfg = load_domain_config(domain)
+            display = cfg.display_name
+        except Exception:
+            display = domain
+        domain_dir = INPUT_DIR / domain
+        files = []
+        if domain_dir.exists():
+            for f in sorted(domain_dir.iterdir()):
+                if f.suffix.lower() in (".pdf", ".html"):
+                    stem = f.stem
+                    has_chunks = (CHUNKS_DIR / f"{stem}_chunks.json").exists()
+                    has_graph = (GRAPH_DIR / f"{stem}_graph.json").exists()
+                    has_neo4j = (GRAPH_DIR / f"{stem}_neo4j.done").exists()
+                    files.append({
+                        "name": f.name,
+                        "has_chunks": has_chunks,
+                        "has_graph": has_graph,
+                        "has_neo4j": has_neo4j,
+                    })
+        result[domain] = {"display_name": display, "files": files}
+    return result
+
+
 @app.post("/process")
 def trigger_processing(
     domain: str,
-    mode: Literal["full", "chunks", "graph"] = "full",
+    mode: Literal["full", "chunks", "extract", "neo4j"] = "full",
+    files: list[str] | None = Query(default=None),
     background_tasks: BackgroundTasks = None,
 ):
-    """Trigger the extraction pipeline for a domain as a background job."""
+    """Trigger the extraction pipeline for a domain as a background job.
+
+    Optional `files` query param restricts processing to those filenames only.
+    """
     available = list_domains()
     if domain not in available:
         raise HTTPException(status_code=400, detail=f"Unknown domain '{domain}'. Available: {available}")
@@ -197,10 +236,11 @@ def trigger_processing(
         "status": "queued",
         "domain": domain,
         "mode": mode,
+        "files_filter": files,
     }
-    background_tasks.add_task(_run_pipeline, job_id, domain, mode)
-    logger.info("Queued job %s: domain=%s mode=%s", job_id, domain, mode)
-    return {"job_id": job_id, "status": "queued", "domain": domain, "mode": mode}
+    background_tasks.add_task(_run_pipeline, job_id, domain, mode, files)
+    logger.info("Queued job %s: domain=%s mode=%s files=%s", job_id, domain, mode, files)
+    return {"job_id": job_id, "status": "queued", "domain": domain, "mode": mode, "files_filter": files}
 
 
 @app.post("/upload/{domain}")
