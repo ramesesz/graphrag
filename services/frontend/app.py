@@ -569,22 +569,36 @@ def generate_answer(question: str, context_text: list[str]) -> str:
         prompt = ChatPromptTemplate.from_template(
             """Du bist ein Rechtsassistent für deutsches Verkehrsrecht (StVO/StVZO).
 
-Nutze die folgenden Graphdaten als Grundlage deiner Antwort:
+WICHTIGE ANWEISUNGEN:
+- Antworte AUSSCHLIESSLICH auf Basis der unten stehenden Graphdaten.
+- Wenn die Graphdaten die Frage nicht beantworten, sage klar: "Diese Information ist in den vorliegenden Dokumenten nicht enthalten."
+- Erfinde KEINE Gesetzesinhalte, Paragraphennummern oder Definitionen, die nicht in den Graphdaten stehen.
+- Spekuliere NICHT und ergänze KEIN Vorwissen aus deinem Training.
+- Zitiere nur Paragraphen und Texte, die direkt in den Graphdaten erscheinen.
+
+Graphdaten:
 {context}
 
 Beantworte die Frage präzise. Strukturiere deine Antwort wie folgt:
-1. **Direkte Antwort** (1-2 Sätze)
-2. **Rechtsgrundlage**: Zitiere die genaue Paragraphennummer und den Gesetzestext
-3. **Ausnahmen oder Sonderfälle** (falls vorhanden)
-4. **Bußgeld / Strafe** (falls relevant)
+1. **Direkte Antwort** (1-2 Sätze, nur wenn die Information in den Graphdaten vorhanden ist)
+2. **Rechtsgrundlage**: Zitiere nur Paragraphennummern und Texte, die in den Graphdaten stehen
+3. **Ausnahmen oder Sonderfälle** (nur wenn in den Graphdaten erwähnt)
+4. **Bußgeld / Strafe** (nur wenn in den Graphdaten enthalten)
 
-Wenn die Graphdaten keine ausreichenden Informationen enthalten, weise darauf hin.
+Falls die Graphdaten keine ausreichenden Informationen enthalten, antworte: "Diese Information ist in den vorliegenden Dokumenten nicht enthalten. Ich kann dazu keine verlässliche Aussage machen."
 
 Frage: {question}"""
         )
     else:
         prompt = ChatPromptTemplate.from_template(
-            "Context from Knowledge Graph:\n{context}\n\nUser Question: {question}"
+            """Answer the user's question based ONLY on the context from the knowledge graph below.
+Do NOT use any knowledge from your training. If the context does not contain the answer, say clearly: "This information is not available in the current documents."
+Do not speculate, assume, or invent facts.
+
+Context from Knowledge Graph:
+{context}
+
+User Question: {question}"""
         )
 
     chain = prompt | st.session_state.llm
