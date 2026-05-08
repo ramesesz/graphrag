@@ -41,3 +41,6 @@ minio_data/
 .idea/
 .vscode/
 *.swp
+
+# --- Presentation ---
+/presentation

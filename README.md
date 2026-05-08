@@ -1,138 +1,126 @@
-# Local GraphRAG Extraction Pipeline
+# GraphRAG — Knowledge Graph Extraction & Chat Pipeline
 
-This project implements a fully local Graph Retrieval-Augmented Generation (GraphRAG) pipeline. It ingests unstructured documents (PDFs), extracts entities and relationships using a local LLM (Llama 3.1 via Ollama), and constructs a Knowledge Graph in Neo4j.
+A config-driven pipeline that ingests documents (PDF/HTML), extracts entities and relationships using GPT-4o, stores them in a Neo4j knowledge graph, and answers natural-language questions via a Streamlit chat interface backed by a three-tier retrieval strategy.
 
-## 🏗 System Architecture
+## System Architecture
 
-The system runs entirely in Docker and consists of four main services:
+Three services orchestrated via Docker Compose:
 
-- **Neo4j**: Graph Database to store nodes and relationships
-- **Ollama**: Local Inference Server hosting the Llama 3.1 model
-- **Processor**: A batch worker that converts PDFs → Text Chunks → Graph Data → Neo4j
-- **Jupyter**: An interactive notebook environment for testing and prototyping (The Playground)
+- **Neo4j** — Graph database storing nodes, relationships, and vector embeddings
+- **Processor** — FastAPI service that handles document ingestion, LLM extraction, and embedding
+- **Frontend** — Streamlit chat app with domain selection, graph visualization, and job monitoring
 
-## 🚀 Quick Start
+Domains are defined as YAML config files — each domain specifies its own node types, relationship types, chunking strategy, and LLM prompts.
+
+## Quick Start
 
 ### Prerequisites
 
-- Docker & Docker Compose installed
-- Hardware: At least 16GB RAM recommended (running an 8B model)
+- Docker & Docker Compose
+- An OpenAI API key (GPT-4o for extraction, GPT-4o-mini for chat)
 
-### Setup (First Run Only)
+### Setup
 
-Start the stack in the background:
+Copy the example env file and fill in your credentials:
+
+```bash
+cp .env.example .env
+# Set OPENAI_API_KEY and NEO4J_PASSWORD in .env
+```
+
+Start all services:
 
 ```bash
 docker-compose up -d
 ```
 
-> **⚠️ IMPORTANT**: You must download the model into the Ollama container before the processor can use it. Run this command and wait for the download (~4.7GB) to finish:
->
-> ```bash
-> docker exec -it ollama ollama pull llama3.1
-> ```
+| Service | URL |
+|---------|-----|
+| Chat frontend | http://localhost:8501 |
+| Processor API | http://localhost:8000 |
+| Neo4j Browser | http://localhost:7474 |
 
-### Usage: How to Process Documents
+Neo4j credentials: `neo4j` / `password123`
 
-#### Step A: Add Documents
+## Domains
 
-Place your PDF files into the local data folder: `./data/documents/` 
+Domains are configured in `configs/domains/`. Two domains are included:
 
-*(Example: Copy GameOfThrones.pdf into this folder)*
+| Domain | Config file | Description |
+|--------|-------------|-------------|
+| Deutsches Verkehrsrecht (StVO/StVZO) | `stvo_stvozo.yaml` | German traffic law — paragraphs, rules, violations, vehicle categories |
+| Fantasy LitRPG (Azarinth Healer) | `fantasy_litrpg.yaml` | Characters, skills, monsters, locations from a LitRPG book series |
 
-#### Step B: Trigger Extraction
+To add a new domain, create a YAML file in `configs/domains/` following the existing structure.
 
-The processor service runs as a batch script. To trigger the ingestion of all files in the input folder:
+## Processing Documents
 
-```bash
-docker-compose restart processor
-```
+### Step 1 — Upload
 
-Alternatively, if it is stopped:
+Upload PDFs or HTML files via the sidebar in the frontend, or place them directly in `data/<domain_id>/documents/`.
 
-```bash
-docker-compose up processor
-```
+### Step 2 — Extract
 
-You can follow the progress (chunking, extraction, loading) by watching the logs:
+Trigger extraction from the frontend sidebar. Four modes are available:
 
-```bash
-docker-compose logs -f processor
-```
+| Mode | What it does |
+|------|-------------|
+| `full` | File → chunks → LLM extraction → graph JSON → Neo4j + embeddings |
+| `chunks` | File → text chunks JSON only (no LLM cost) |
+| `extract` | Existing chunks JSON → LLM extraction → graph JSON |
+| `neo4j` | Existing graph JSON → Neo4j + embeddings only |
 
-### Visualization
+Monitor job progress in the sidebar's **Jobs** panel.
 
-Once the processor finishes:
+### Step 3 — Chat
 
-1. Open the Neo4j Browser at http://localhost:7474
-2. Login with:
-   - **Username**: `neo4j`
-   - **Password**: `password123` (or as defined in your compose file)
-3. Run a query:
+Select a domain in the sidebar and ask questions in the chat interface. Each answer includes:
 
-```cypher
-MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 50
-```
-## 📂 Project Structure
+- The LLM response grounded strictly in graph data
+- An interactive graph visualization showing which nodes and edges were used
+
+## Retrieval Strategy
+
+Every question goes through a three-tier fallback:
+
+1. **Vector search** — embeds the question and finds semantically similar nodes via `node_embeddings` index
+2. **Fulltext BM25** — extracts named entities from the question and searches the `node_search` Lucene index
+3. **CONTAINS** — substring match on `node.id` as a last resort (no index required)
+
+Tier 2 and 3 only run if the previous tier returns no results.
+
+## Project Structure
 
 ```
 .
-├── docker-compose.yml              # Orchestration
-├── .gitignore                       # Ignores large data files
-├── data/
-│   ├── documents/                  # [INPUT] Drop PDFs here
-│   └── extracted_json/             # [OUTPUT] Intermediate JSON triples saved here
-├── notebooks/                       # Jupyter notebooks for testing
+├── docker-compose.yml
+├── configs/
+│   └── domains/                    # Domain YAML configs
+│       ├── stvo_stvozo.yaml
+│       └── fantasy_litrpg.yaml
+├── data/                           # Document input and extraction output
+│   ├── <domain_id>/documents/      # [INPUT] Drop PDFs/HTML here
+│   ├── output_json/                # Extracted graph JSON
+│   └── chunks/                     # Intermediate chunk JSON
 └── services/
-    ├── processor/                  # Python logic for extraction
-    │   ├── main.py
-    │   ├── requirements.txt
+    ├── neo4j/
+    │   └── init/                   # Cypher constraints and indexes
+    ├── processor/                  # FastAPI extraction service
+    │   ├── api.py
+    │   ├── pipeline/
+    │   │   ├── config_loader.py
+    │   │   └── ...
     │   └── Dockerfile
-    └── neo4j/                       # Database configuration
-```
-## 🔬 Development & Testing
-
-A Jupyter Lab environment is included to test code snippets interactively.
-
-1. Ensure the container is running:
-
-```bash
-docker-compose up -d jupyter
+    └── frontend/                   # Streamlit chat app
+        ├── app.py
+        └── Dockerfile
 ```
 
-2. Get the login token from the logs:
-
-```bash
-docker logs rag-notebook
-```
-
-3. Open the URL (e.g., `http://127.0.0.1:8888/?token=...`) in your browser.
-
-## 🛠 Applications (Coming Soon)
-
-The current pipeline handles the ETL (Extract, Transform, Load) phase. The following applications will be built on top of the populated graph:
-
-### 🤖 Chatbot (Planned)
-
-A conversational interface (RAG) that allows users to query the documents using:
-
-- **Vector Search**: To find relevant text chunks
-- **Graph Traversal**: To find hidden connections between entities (2-3 hops)
-- **Context Synthesis**: Generating answers using Llama 3.1 based on retrieved graph context
-
-### 📊 Graph Analysis (Planned)
-
-Tools for advanced network analysis, including:
-
-- **Centrality Algorithms**: Identifying key characters or entities (PageRank, Betweenness)
-- **Community Detection**: Finding clusters or factions within the data (Louvain)
-- **Pathfinding**: Analyzing shortest paths between two disconnected nodes
-
-## ⚠️ Troubleshooting
+## Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
-| "Model not found" error | If the processor fails immediately, you likely skipped the model pull step. Run: `docker exec -it ollama ollama pull llama3.1` |
-| Performance is slow | The extraction process runs on your CPU/iGPU. Large books can take several minutes. |
-| Check CPU usage | Run: `docker stats` |
-| Slow performance | Ensure Docker has access to sufficient resources (especially on Mac/Windows). |
+| Vector search returns nothing | The `node_embeddings` index is created after the first `full` or `neo4j` extraction — run at least one document through first |
+| Fulltext search fails | The `node_search` index is created by `services/neo4j/init/constraints.cypher` on startup — check Neo4j logs |
+| Processor API unreachable | Run `docker-compose logs processor` — likely a missing `.env` variable |
+| OpenAI rate limit errors | Reduce `batch_size` in the domain YAML config |
